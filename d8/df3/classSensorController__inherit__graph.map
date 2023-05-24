@@ -1,0 +1,6 @@
+<map id="SensorController" name="SensorController">
+<area shape="rect" id="node1" title=" " alt="" coords="185,5,316,32"/>
+<area shape="rect" id="node2" href="$db/d1b/classPeriodicController.html" title=" " alt="" coords="5,80,144,107"/>
+<area shape="rect" id="node3" href="$d6/d6d/classSteadyStateController.html" title=" " alt="" coords="168,80,333,107"/>
+<area shape="rect" id="node4" href="$da/deb/classTransientController.html" title=" " alt="" coords="358,80,503,107"/>
+</map>

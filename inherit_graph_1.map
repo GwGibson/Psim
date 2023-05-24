@@ -1,0 +1,10 @@
+<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
+<area shape="rect" id="node1" title=" " alt="" coords="5,93,120,120"/>
+<area shape="rect" id="node2" href="$db/d16/classCellError.html" title=" " alt="" coords="215,43,293,69"/>
+<area shape="rect" id="node5" href="$d4/d58/classCompositeSurfaceError.html" title=" " alt="" coords="168,93,340,120"/>
+<area shape="rect" id="node6" href="$df/d46/classShapeError.html" title=" " alt="" coords="207,144,301,171"/>
+<area shape="rect" id="node3" href="$db/d99/classIntersectError.html" title=" " alt="" coords="388,5,499,32"/>
+<area shape="rect" id="node4" href="$db/d85/classOverlapError.html" title=" " alt="" coords="391,56,495,83"/>
+<area shape="rect" id="node7" href="$dc/d35/classLineError.html" title=" " alt="" coords="403,119,483,145"/>
+<area shape="rect" id="node8" href="$d3/d45/classTriangleError.html" title=" " alt="" coords="391,169,495,196"/>
+</map>
