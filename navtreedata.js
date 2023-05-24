@@ -26,43 +26,42 @@ var NAVTREE =
 [
   [ "psim", "index.html", [
     [ "Namespaces", "namespaces.html", [
-      [ "Table of Contents", "index.html#autotoc_md1", null ],
-      [ "Overview", "index.html#autotoc_md2", null ],
-      [ "Feature Set", "index.html#autotoc_md4", null ],
-      [ "Requirements", "index.html#autotoc_md6", [
-        [ "Docker", "index.html#autotoc_md7", null ]
+      [ "Overview", "index.html#autotoc_md1", null ],
+      [ "Feature Set", "index.html#autotoc_md3", null ],
+      [ "Requirements", "index.html#autotoc_md5", [
+        [ "Docker", "index.html#autotoc_md6", null ]
       ] ],
-      [ "Build Instructions", "index.html#autotoc_md8", [
-        [ "(1) Specify the compiler using environment variables", "index.html#autotoc_md9", [
-          [ "Commands for setting the compilers", "index.html#autotoc_md10", null ]
+      [ "Build Instructions", "index.html#autotoc_md7", [
+        [ "(1) Specify the compiler using environment variables", "index.html#autotoc_md8", [
+          [ "Commands for setting the compilers", "index.html#autotoc_md9", null ]
         ] ],
-        [ "(2) Configure your build", "index.html#autotoc_md11", [
-          [ "(2a) Configuring via cmake", "index.html#autotoc_md12", null ],
-          [ "(2b) Configuring via ccmake", "index.html#autotoc_md13", null ]
+        [ "(2) Configure your build", "index.html#autotoc_md10", [
+          [ "(2a) Configuring via cmake", "index.html#autotoc_md11", null ],
+          [ "(2b) Configuring via ccmake", "index.html#autotoc_md12", null ]
         ] ],
-        [ "(3) Build the project", "index.html#autotoc_md14", null ]
+        [ "(3) Build the project", "index.html#autotoc_md13", null ]
       ] ],
-      [ "Python/JSON examples", "index.html#autotoc_md16", null ],
-      [ "Output Format", "index.html#autotoc_md18", [
-        [ "Steady-State", "index.html#autotoc_md19", null ],
-        [ "Periodic & Transient", "index.html#autotoc_md20", null ]
+      [ "Python/JSON examples", "index.html#autotoc_md15", null ],
+      [ "Output Format", "index.html#autotoc_md17", [
+        [ "Steady-State", "index.html#autotoc_md18", null ],
+        [ "Periodic & Transient", "index.html#autotoc_md19", null ]
       ] ],
-      [ "Visualizations", "index.html#autotoc_md22", [
-        [ "Steady-State Visualization (kinked_demo.py)", "index.html#autotoc_md23", null ],
-        [ "Steady-State Visualization (linear_sides_demo.py)", "index.html#autotoc_md24", null ],
-        [ "Periodic Visualization (linear_sides_demo.py)", "index.html#autotoc_md25", null ],
-        [ "Transient Visualization (linear_sides_demo.py)", "index.html#autotoc_md26", null ],
-        [ "Phasor Visualization", "index.html#autotoc_md27", null ]
+      [ "Visualizations", "index.html#autotoc_md21", [
+        [ "Steady-State Visualization (kinked_demo.py)", "index.html#autotoc_md22", null ],
+        [ "Steady-State Visualization (linear_sides_demo.py)", "index.html#autotoc_md23", null ],
+        [ "Periodic Visualization (linear_sides_demo.py)", "index.html#autotoc_md24", null ],
+        [ "Transient Visualization (linear_sides_demo.py)", "index.html#autotoc_md25", null ],
+        [ "Phasor Visualization", "index.html#autotoc_md26", null ]
       ] ],
-      [ "Next Steps", "index.html#autotoc_md29", [
-        [ "Model Creation", "index.html#autotoc_md30", null ],
-        [ "Material Interfaces", "index.html#autotoc_md31", null ],
-        [ "Optical Phonons", "index.html#autotoc_md32", null ],
-        [ "Steady-State Detection", "index.html#autotoc_md33", null ],
-        [ "Geometrical Limitations", "index.html#autotoc_md34", null ],
-        [ "Visualization Enchancements", "index.html#autotoc_md35", null ]
+      [ "Next Steps", "index.html#autotoc_md28", [
+        [ "Model Creation", "index.html#autotoc_md29", null ],
+        [ "Material Interfaces", "index.html#autotoc_md30", null ],
+        [ "Optical Phonons", "index.html#autotoc_md31", null ],
+        [ "Steady-State Detection", "index.html#autotoc_md32", null ],
+        [ "Geometrical Limitations", "index.html#autotoc_md33", null ],
+        [ "Visualization Enchancements", "index.html#autotoc_md34", null ]
       ] ],
-      [ "References", "index.html#autotoc_md37", null ],
+      [ "References", "index.html#autotoc_md36", null ],
       [ "Namespace List", "namespaces.html", "namespaces_dup" ],
       [ "Namespace Members", "namespacemembers.html", [
         [ "All", "namespacemembers.html", null ],
