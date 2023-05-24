@@ -174,7 +174,7 @@ CMake uses the environment variables CC and CXX to decide which compiler to use.
 
     - Visual Studio generator and compiler (cl)
 
-    ```powershell
+    ```bash
     [Environment]::SetEnvironmentVariable("CC", "cl.exe", "User")
     [Environment]::SetEnvironmentVariable("CXX", "cl.exe", "User")
     refreshenv
@@ -182,13 +182,13 @@ CMake uses the environment variables CC and CXX to decide which compiler to use.
 
     - Set the architecture using [vcvarsall](https://docs.microsoft.com/en-us/cpp/build/building-on-the-command-line?view=vs-2019#vcvarsall-syntax):
 
-      ```powershell
+      ```bash
       vcvarsall.bat x64
       ```
 
     - clang
 
-      ```powershell
+      ```bash
       [Environment]::SetEnvironmentVariable("CC", "clang.exe", "User")
       [Environment]::SetEnvironmentVariable("CXX", "clang++.exe", "User")
       refreshenv
@@ -196,7 +196,7 @@ CMake uses the environment variables CC and CXX to decide which compiler to use.
 
     - gcc
 
-      ```powershell
+      ```bash
       [Environment]::SetEnvironmentVariable("CC", "gcc.exe", "User")
       [Environment]::SetEnvironmentVariable("CXX", "g++.exe", "User")
       refreshenv
@@ -204,7 +204,7 @@ CMake uses the environment variables CC and CXX to decide which compiler to use.
 
   - Temporarily (only for the current shell):
 
-    ```powershell
+    ```bash
     $Env:CC="clang.exe"
     $Env:CXX="clang++.exe"
     ```
@@ -252,7 +252,7 @@ cmake --build ./build
 For Visual Studio, give the build configuration (Release, RelWithDeb, Debug, etc.) like the following:
 
 ```bash
-    cmake --build ./build -- /p:configuration=Release
+cmake --build ./build -- /p:configuration=Release
 ```
 
 ---

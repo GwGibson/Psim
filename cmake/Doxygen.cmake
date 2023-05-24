@@ -16,7 +16,6 @@ function(enable_doxygen DOXYGEN_THEME)
   endif()
   
   set(DOXYGEN_CREATE_SUBDIRS YES)
-  set(DOXYGEN_IMAGE_PATH "images")
   set(DOXYGEN_CALLER_GRAPH YES)
   set(DOXYGEN_CALL_GRAPH YES)
   set(DOXYGEN_EXTRACT_ALL YES)
