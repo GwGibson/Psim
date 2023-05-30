@@ -11,11 +11,11 @@ release:
 	cmake --build ./build --config Release
 
 debug:
-	cmake -S ./ -B ./build -G "Ninja Multi-Config" -DCMAKE_BUILD_TYPE:STRING=Debug
+	cmake -S ./ -B ./build -G "Ninja Multi-Config" -DENABLE_DEVELOPER_MODE:BOOL=ON -DCMAKE_BUILD_TYPE:STRING=Debug
 	cmake --build ./build --config Debug
 
 docs:
-	cmake -S ./ -B ./build -G "Ninja Multi-Config" -DCMAKE_BUILD_TYPE:STRING=Debug -DFEATURE_DOCS:BOOL=ON
+	cmake -S ./ -B ./build -G "Ninja Multi-Config" -DCMAKE_BUILD_TYPE:STRING=Debug -DENABLE_DEVELOPER_MODE:BOOL=ON -DOPT_ENABLE_DOXYGEN:BOOL=ON
 	cmake --build ./build --target doxygen-docs --config Debug
 
 format:
