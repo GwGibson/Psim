@@ -20,11 +20,9 @@ target_include_directories(psim INTERFACE "${CMAKE_BINARY_DIR}/configured_files/
 # Precompiled Headers
 #target_precompile_headers(${module_name} PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/include/psimPch.h")
 
-add_executable(psim.out main.cpp)
+add_executable(psim.out "./src/main.cpp")
 target_link_libraries(
   psim.out
   PUBLIC psim
-  PUBLIC project_options project_warnings
+  PRIVATE project_options project_warnings
 )
-
-target_include_directories(psim PRIVATE "${CMAKE_BINARY_DIR}/configured_files/include")

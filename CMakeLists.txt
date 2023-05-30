@@ -82,9 +82,6 @@ dynamic_project_options(
 
 target_compile_features(project_options INTERFACE cxx_std_${CMAKE_CXX_STANDARD})
 
-# configure files based on CMake configuration options
-add_subdirectory(configured_files)
-
 # Adding the src:
 add_subdirectory(psim)
 
