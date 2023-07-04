@@ -25,4 +25,4 @@ jobs:
         author_email: robot@example.com
         message: ':art: Committing clang-format changes'
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.PSIM_PAT }}

@@ -9,7 +9,7 @@ on:
       - main
 
 env:
-  CLANG_TIDY_VERSION: "15.0.2"
+  CLANG_TIDY_VERSION: "14.0.0"
   VERBOSE: 1
       
 jobs:

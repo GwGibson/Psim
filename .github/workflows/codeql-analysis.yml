@@ -47,12 +47,6 @@ jobs:
         developer_mode: ${{ matrix.developer_mode }}
         generator: ${{ matrix.generator }}
 
-    - name: Project Name
-      uses: cardinalby/export-env-action@v2
-      with:
-        envFile: '.github/constants.env'
-
-
     - name: Setup Cpp
       uses: aminya/setup-cpp@v1
       with:

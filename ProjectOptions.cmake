@@ -17,11 +17,11 @@ macro(psim_supports_sanitizers)
 endmacro()
 
 macro(psim_setup_options)
-  option(psim_ENABLE_HARDENING "Enable hardening" ON)
+  option(psim_ENABLE_HARDENING "Enable hardening" OFF)
   cmake_dependent_option(
     psim_ENABLE_GLOBAL_HARDENING
     "Attempt to push hardening options to built dependencies"
-    ON
+    OFF
     psim_ENABLE_HARDENING
     OFF)
 
