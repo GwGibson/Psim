@@ -14,6 +14,9 @@
  <a href="https://github.com/GwGibson/psim/actions/workflows/clang-format-check.yml">
     <img src="https://github.com/GwGibson/psim/actions/workflows/clang-format-check.yml/badge.svg"/>
     </a>
+ <a href="https://github.com/GwGibson/psim/actions/workflows/codeql-analysis.yml">
+    <img src="https://github.com/GwGibson/psim/actions/workflows/codeql-analysis.yml/badge.svg"/>
+    </a>
 </p>
 
 ---
@@ -28,12 +31,12 @@
 - [Python/JSON examples](#pythonjson-examples)
 - [Output Format](#output-format)
   - [Steady-State](#steady-state)
-  - [Periodic \& Transient](#periodic--transient)
+  - [Periodic & Transient](#periodic--transient)
 - [Visualizations](#visualizations)
-  - [Steady-State Visualization (kinked\_demo.py)](#steady-state-visualization-kinked_demopy)
-  - [Steady-State Visualization (linear\_sides\_demo.py)](#steady-state-visualization-linear_sides_demopy)
-  - [Periodic Visualization (linear\_sides\_demo.py)](#periodic-visualization-linear_sides_demopy)
-  - [Transient Visualization (linear\_sides\_demo.py)](#transient-visualization-linear_sides_demopy)
+  - [Steady-State Visualization (kinked_demo.py)](#steady-state-visualization-kinked_demopy)
+  - [Steady-State Visualization (linear_sides_demo.py)](#steady-state-visualization-linear_sides_demopy)
+  - [Periodic Visualization (linear_sides_demo.py)](#periodic-visualization-linear_sides_demopy)
+  - [Transient Visualization (linear_sides_demo.py)](#transient-visualization-linear_sides_demopy)
   - [Phasor Visualization](#phasor-visualization)
 - [Next Steps](#next-steps)
   - [Model Creation](#model-creation)
@@ -41,7 +44,7 @@
   - [Optical Phonons](#optical-phonons)
   - [Steady-State Detection](#steady-state-detection)
   - [Geometrical Limitations](#geometrical-limitations)
-  - [Visualization Enchancements](#visualization-enchancements)
+  - [Visualization Enhancements](#visualization-enchancements)
 - [References](#references)
 
 ---

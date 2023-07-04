@@ -9,7 +9,7 @@ on:
       - main
 
 env:
-  CLANG_TIDY_VERSION: "14.0.0"
+  CLANG_TIDY_VERSION: "15.0.2"
   VERBOSE: 1
       
 jobs:
@@ -26,7 +26,7 @@ jobs:
           - windows-2019		  
         compiler:
           - gcc-11		
-          - llvm-14.0.0
+          - llvm-15.0.2
           - msvc
         generator:
           - "Ninja Multi-Config"
