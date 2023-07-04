@@ -1,8 +1,8 @@
 var searchData=
 [
-  ['final_5ffluxes_42',['final_fluxes',['../d5/dca/structSensorMeasurements.html#ac68fe29ce126b66f735e82691daec32f',1,'SensorMeasurements']]],
-  ['final_5ftemps_43',['final_temps',['../d5/dca/structSensorMeasurements.html#a90ea36ba571eede548510004f7656778',1,'SensorMeasurements']]],
-  ['findtransitionsurface_44',['findTransitionSurface',['../de/dfd/classCell.html#ad8ab033d3db9b26d175b2c8481235acf',1,'Cell']]],
-  ['freqindex_45',['freqIndex',['../d3/d89/classMaterial.html#a47a4c76d7347a7f1b8fdbe326a791437',1,'Material']]],
-  ['functimer_46',['FuncTimer',['../d3/d61/structFuncTimer.html',1,'']]]
+  ['emit_5ftable_5f_39',['emit_table_',['../d4/de9/classEmitSurface.html#af5649bd4f25f096d577c03138375f900',1,'EmitSurface']]],
+  ['emitenergy_40',['emitEnergy',['../d3/d89/classMaterial.html#adad1e1cd8d99fe9494077cf39390d53c',1,'Material']]],
+  ['emitsurface_41',['EmitSurface',['../d4/de9/classEmitSurface.html',1,'EmitSurface'],['../d4/de9/classEmitSurface.html#adfc524ea7ecf13ad57f56998c6f3b076',1,'EmitSurface::EmitSurface()']]],
+  ['emittable_42',['emitTable',['../d3/d89/classMaterial.html#a92e94583d0fc7eadfa45a86935fdcd90',1,'Material']]],
+  ['exportresults_43',['exportResults',['../d6/d18/classModel.html#a93126410b7dcd0150cf8c1e34cc70fc7',1,'Model']]]
 ];

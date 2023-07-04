@@ -1,5 +1,7 @@
 var searchData=
 [
-  ['x_263',['x',['../dc/d33/structGeometry_1_1Vector2D.html#ac68b2c234723d74b47964dd8f666a664',1,'Geometry::Vector2D::x()'],['../d5/d8f/structGeometry_1_1Point.html#afda73ad21424fb7a5202e3a7f1865b4a',1,'Geometry::Point::x()']]],
-  ['x_5fflux_264',['x_flux',['../d5/dca/structSensorMeasurements.html#af3f4e18f4e14b3ac35615d78eb478957',1,'SensorMeasurements']]]
+  ['w_261',['w',['../d6/d24/structRelaxationData.html#aeb6061a0ad41dcc5b6b316a4032226c1',1,'RelaxationData']]],
+  ['w_5fmax_5fla_262',['w_max_la',['../d4/d8a/structDispersionData.html#af72ae79bb69bfbcf9db69f84c0f5aa61',1,'DispersionData']]],
+  ['w_5fmax_5fta_263',['w_max_ta',['../d4/d8a/structDispersionData.html#a877e67410f627b2cd721e1f53ddc3e04',1,'DispersionData']]],
+  ['what_264',['what',['../db/d16/classCellError.html#ab02dfe45e2d1a403e7c3e0d3a2d91648',1,'CellError::what()'],['../d4/d58/classCompositeSurfaceError.html#ad0ed291aa684b150a8863013f4d9c3fa',1,'CompositeSurfaceError::what()'],['../df/d46/classShapeError.html#acdfc9a355ab423508200801bf20acda2',1,'ShapeError::what()']]]
 ];

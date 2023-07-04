@@ -1,9 +1,17 @@
 var searchData=
 [
-  ['nextimpact_133',['nextImpact',['../df/dce/classModelSimulator.html#a05d21cdee29ec1ab47aaee776ea92401',1,'ModelSimulator']]],
-  ['normal_134',['normal',['../d1/d2a/structGeometry_1_1Line.html#acf9599960aedfa67e685b594baa494c9',1,'Geometry::Line']]],
-  ['normal_5f_135',['normal_',['../de/d10/classSurface.html#aa6bfca3a7c654642d3d17f592bbe0667',1,'Surface']]],
-  ['num_5ffreq_5fbins_136',['NUM_FREQ_BINS',['../d3/d89/classMaterial.html#ac4ce7708f1a1ffc8aa238a545c64783f',1,'Material']]],
-  ['num_5fmeasurements_5f_137',['num_measurements_',['../df/d30/classSensorController.html#aeef1f7fcf1a945c20b16a21eab0d2239',1,'SensorController']]],
-  ['num_5frelax_5frates_138',['NUM_RELAX_RATES',['../d2/db2/classPhonon.html#a1adf052ad20010e8799d5eb9cb0433de',1,'Phonon']]]
+  ['main_121',['main',['../df/d0a/main_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97',1,'main.cpp']]],
+  ['main_2ecpp_122',['main.cpp',['../df/d0a/main_8cpp.html',1,'']]],
+  ['material_123',['Material',['../d3/d89/classMaterial.html',1,'Material'],['../d3/d89/classMaterial.html#a2abd6c304beb870d900cc4c03d6d62a4',1,'Material::Material()']]],
+  ['material_2ecpp_124',['material.cpp',['../d7/d5c/material_8cpp.html',1,'']]],
+  ['material_2eh_125',['material.h',['../d3/d65/material_8h.html',1,'']]],
+  ['material_5f_126',['material_',['../d4/de9/classEmitSurface.html#a30f424a20b020dfc6e13683eb6c3c00e',1,'EmitSurface::material_()'],['../df/d30/classSensorController.html#a575caf08cc96f6f66a34fd3062e36d4b',1,'SensorController::material_()']]],
+  ['max_5ffreq_5fla_127',['max_freq_la',['../d3/d89/classMaterial.html#a0770a1f0f963393f8bc3691a5bbc2079',1,'Material']]],
+  ['max_5ffreq_5fta_128',['max_freq_ta',['../d3/d89/classMaterial.html#a7b65ea3804ab4e95ed8cd47356232571',1,'Material']]],
+  ['model_129',['Model',['../d6/d18/classModel.html',1,'Model'],['../d6/d18/classModel.html#ab4e5e4152631a33cca9deb8f1470ae0c',1,'Model::Model()']]],
+  ['model_2ecpp_130',['model.cpp',['../d6/db4/model_8cpp.html',1,'']]],
+  ['model_2eh_131',['model.h',['../dc/d51/model_8h.html',1,'']]],
+  ['modelsimulator_132',['ModelSimulator',['../df/dce/classModelSimulator.html#a1ff526603450f012cdd20267c827fd32',1,'ModelSimulator::ModelSimulator()'],['../df/dce/classModelSimulator.html',1,'ModelSimulator']]],
+  ['modelsimulator_2ecpp_133',['modelSimulator.cpp',['../d1/d3b/modelSimulator_8cpp.html',1,'']]],
+  ['modelsimulator_2eh_134',['modelSimulator.h',['../db/d26/modelSimulator_8h.html',1,'']]]
 ];

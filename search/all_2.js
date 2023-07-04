@@ -1,15 +1,13 @@
 var searchData=
 [
-  ['cell_20',['Cell',['../de/dfd/classCell.html',1,'Cell'],['../de/dfd/classCell.html#a2406c2164fba8d979a5ee4228582ac06',1,'Cell::Cell()']]],
-  ['cell_2ecpp_21',['cell.cpp',['../d6/d68/cell_8cpp.html',1,'']]],
-  ['cell_2eh_22',['cell.h',['../d0/ddd/cell_8h.html',1,'']]],
-  ['cell_5f_23',['cell_',['../de/d10/classSurface.html#a9db26d455659ba2d6c163c86070a3b43',1,'Surface']]],
-  ['cellerror_24',['CellError',['../db/d16/classCellError.html',1,'']]],
-  ['celloriginbuilder_25',['CellOriginBuilder',['../df/da6/classCellOriginBuilder.html',1,'CellOriginBuilder'],['../df/da6/classCellOriginBuilder.html#a7ad373e0225473fa578511e8b885af20',1,'CellOriginBuilder::CellOriginBuilder()']]],
-  ['compositesurface_26',['CompositeSurface',['../d3/d6c/classCompositeSurface.html',1,'CompositeSurface'],['../d3/d6c/classCompositeSurface.html#ab2c4822949a03055f7e6e75cbabbe577',1,'CompositeSurface::CompositeSurface()']]],
-  ['compositesurface_2ecpp_27',['compositeSurface.cpp',['../dc/d09/compositeSurface_8cpp.html',1,'']]],
-  ['compositesurface_2eh_28',['compositeSurface.h',['../d8/d77/compositeSurface_8h.html',1,'']]],
-  ['compositesurfaceerror_29',['CompositeSurfaceError',['../d4/d58/classCompositeSurfaceError.html',1,'CompositeSurfaceError'],['../d4/d58/classCompositeSurfaceError.html#aaa122dce8d356a1d90481e8b0d6a922b',1,'CompositeSurfaceError::CompositeSurfaceError()']]],
-  ['contains_30',['contains',['../d3/d6c/classCompositeSurface.html#ad434a670c58be3a9834492be194052fd',1,'CompositeSurface::contains()'],['../d1/d2a/structGeometry_1_1Line.html#a5477a6d73d807cc2173ca0f06e021b2b',1,'Geometry::Line::contains(const Line &amp;other) const noexcept'],['../d1/d2a/structGeometry_1_1Line.html#a55d78f941a47dd0c8f2e0db18e8af197',1,'Geometry::Line::contains(const Point &amp;point) const noexcept'],['../d9/d10/structGeometry_1_1Triangle.html#ac527aee8f182051052aa2bb775c5f074',1,'Geometry::Triangle::contains(const Triangle &amp;other) const noexcept'],['../d9/d10/structGeometry_1_1Triangle.html#a11f8ba8b5b8250b785ca38e1cb197698',1,'Geometry::Triangle::contains(const Point &amp;p) const noexcept'],['../de/d10/classSurface.html#a049dbe26ca36205a76b49b5fa47af174',1,'Surface::contains()']]],
-  ['cumul_5fsum_31',['cumul_sum',['../d1/d7e/structTableData.html#ae059a3644eb2a58ba5f2d30fd43363a1',1,'TableData']]]
+  ['b_5fi_12',['b_i',['../d6/d24/structRelaxationData.html#ab862737d51b573a982bb5abb697695f2',1,'RelaxationData']]],
+  ['b_5fl_13',['b_l',['../d6/d24/structRelaxationData.html#a27243758119687b4547dc970ea13de19',1,'RelaxationData']]],
+  ['b_5ftn_14',['b_tn',['../d6/d24/structRelaxationData.html#ad2fe2cad3393b12ba87c0d77a4d3e6f1',1,'RelaxationData']]],
+  ['b_5ftu_15',['b_tu',['../d6/d24/structRelaxationData.html#a8848725cff734d11da932332b24d1b40',1,'RelaxationData']]],
+  ['base_5ftable_5f_16',['base_table_',['../df/d30/classSensorController.html#add815322d0dad1bc9cdf9f37c2e57e5f',1,'SensorController']]],
+  ['baseenergy_17',['baseEnergy',['../d3/d89/classMaterial.html#a2b90129e78c2caf2376b680700706165',1,'Material']]],
+  ['basetable_18',['baseTable',['../d3/d89/classMaterial.html#a9ef58f9cef57163ca5b135530e1b0bdf',1,'Material']]],
+  ['boundaryhandlephonon_19',['boundaryHandlePhonon',['../de/d10/classSurface.html#abbc414c1f041996a070427dfb109b64b',1,'Surface']]],
+  ['boundingbox_20',['boundingBox',['../d1/d2a/structGeometry_1_1Line.html#a7dcaef0c1ce48c22595f5e35d952e5cf',1,'Geometry::Line']]],
+  ['builderobj_21',['BuilderObj',['../df/dce/classModelSimulator.html#a7d2835e32c105880f1dc1217c484eade',1,'ModelSimulator']]]
 ];

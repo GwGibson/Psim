@@ -29,16 +29,12 @@ SOFTWARE.
 
 html {
     /* side nav width. MUST be = `TREEVIEW_WIDTH`.
-     * Make sure it is wide enough to contain the page title (logo + title + version)
+     * Make sure it is wide enought to contain the page title (logo + title + version)
      */
-    --side-nav-fixed-width: 335px;
+    --side-nav-fixed-width: 340px;
     --menu-display: none;
 
     --top-height: 120px;
-}
-
-#projectname {
-    white-space: nowrap;
 }
 
 
@@ -68,7 +64,6 @@ html {
         height: var(--top-height);
         margin-bottom: calc(0px - var(--top-height));
         max-width: var(--side-nav-fixed-width);
-        overflow: hidden;
         background: var(--side-nav-background);
     }
     #main-nav {
