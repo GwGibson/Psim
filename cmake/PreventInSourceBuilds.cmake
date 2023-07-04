@@ -1,9 +1,7 @@
-include_guard()
-
 #
 # This function will prevent in-source builds
 #
-function(assure_out_of_source_builds)
+function(psim_assure_out_of_source_builds)
   # make sure the user doesn't play dirty with symlinks
   get_filename_component(srcdir "${CMAKE_SOURCE_DIR}" REALPATH)
   get_filename_component(bindir "${CMAKE_BINARY_DIR}" REALPATH)
@@ -17,3 +15,5 @@ function(assure_out_of_source_builds)
     message(FATAL_ERROR "Quitting configuration")
   endif()
 endfunction()
+
+psim_assure_out_of_source_builds()

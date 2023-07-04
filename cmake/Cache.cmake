@@ -1,7 +1,5 @@
-include_guard()
-
 # Enable cache if available
-function(enable_cache)
+function(psim_enable_cache)
   set(CACHE_OPTION
       "ccache"
       CACHE STRING "Compiler cache to be used")

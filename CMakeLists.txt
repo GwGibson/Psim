@@ -1,31 +1,32 @@
-cmake_minimum_required(VERSION 3.16...3.23)
-set(CMAKE_CXX_STANDARD 17)
+cmake_minimum_required(VERSION 3.21)
+
+# Only set the cxx_standard if it is not set by someone else
+if (NOT DEFINED CMAKE_CXX_STANDARD)
+  set(CMAKE_CXX_STANDARD 20)
+endif()
+
 set(CMAKE_CXX_EXTENSIONS ON)
-
-set(ENABLE_DEVELOPER_MODE
-    FALSE
-    CACHE BOOL "Enable 'developer mode'")
-
-# Change this to false if you want to disable warnings_as_errors in developer mode
-set(OPT_WARNINGS_AS_ERRORS_DEVELOPER_DEFAULT TRUE)
-
-set(_project_options_SOURCE_DIR cmake/)
-list(APPEND CMAKE_MODULE_PATH ${_project_options_SOURCE_DIR})
-include(${_project_options_SOURCE_DIR}/Index.cmake)
 
 # Set the project name and language
 project(
   psim
   VERSION 1.0
   DESCRIPTION "Generalized 2D phonon transport using a Monte Carlo method"
+  HOMEPAGE_URL "https://gwgibson.github.io/psim/"
   LANGUAGES CXX C)
 
-# This variable is set by project() in CMake 3.21+
-string(
-  COMPARE EQUAL
-          "${CMAKE_SOURCE_DIR}"
-          "${PROJECT_SOURCE_DIR}"
-          PROJECT_IS_TOP_LEVEL)
+include(cmake/PreventInSourceBuilds.cmake)
+
+include(Dependencies.cmake)
+psim_setup_dependencies()
+
+include(ProjectOptions.cmake)
+
+psim_setup_options()
+psim_global_options()
+psim_local_options()
+
+set(CMAKE_CXX_VISIBILITY_PRESET hidden)
 
 set(GIT_SHA
     "Unknown"
@@ -36,54 +37,20 @@ string(
             8
             GIT_SHORT_SHA)
 
-get_property(BUILDING_MULTI_CONFIG GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
-if(BUILDING_MULTI_CONFIG)
-  if(NOT CMAKE_BUILD_TYPE)
-    # Make sure that all supported configuration types have their
-    # associated conan packages available. You can reduce this
-    # list to only the configuration types you use, but only if one
-    # is not forced-set on the command line for VS
-    message(TRACE "Setting up multi-config build types")
-    set(CMAKE_CONFIGURATION_TYPES
-        Debug
-        Release
-        RelWithDebInfo
-        MinSizeRel
-        CACHE STRING "Enabled build types" FORCE)
-  else()
-    message(TRACE "User chose a specific build type, so we are using that")
-    set(CMAKE_CONFIGURATION_TYPES
-        ${CMAKE_BUILD_TYPE}
-        CACHE STRING "Enabled build types" FORCE)
-  endif()
+
+target_compile_features(psim_options INTERFACE cxx_std_${CMAKE_CXX_STANDARD})
+
+add_library(psim::psim_options ALIAS psim_options)
+add_library(psim::psim_warnings ALIAS psim_warnings)
+
+target_compile_features(psim_options INTERFACE cxx_std_${CMAKE_CXX_STANDARD})
+
+add_subdirectory(./psim)
+
+# Don't even look at tests if we're not top level
+if(NOT PROJECT_IS_TOP_LEVEL)
+  return()
 endif()
-
-include(${_project_options_SOURCE_DIR}/DynamicProjectOptions.cmake)
-
-dynamic_project_options(
-  # Note: PCH is disabled by default in developer mode because these headers become
-  # globally included and they can mask other errors
-  PCH_HEADERS # TODO: Consider including all PCH in a single header file and precompiling
-  <vector>
-  <string> # This is a list of headers to pre-compile
-  # MSVC_WARNINGS    # Override the defaults for the MSVC warnings
-  # CLANG_WARNINGS   # Override the defaults for the CLANG warnings
-  # GCC_WARNINGS     # Override the defaults for the GCC warnings
-  CPPCHECK_OPTIONS
-  --enable=style,performance,warning,portability
-  --inline-suppr
-  --suppress=cppcheckError
-  --suppress=internalAstError
-  --suppress=unmatchedSuppression
-  --suppress=passedByValue
-  --suppress=syntaxError
-  --inconclusive
-)
-
-target_compile_features(project_options INTERFACE cxx_std_${CMAKE_CXX_STANDARD})
-
-# Adding the src:
-add_subdirectory(psim)
 
 # If MSVC is being used, and ASAN is enabled, we need to set the debugger environment
 # so that it behaves well with MSVC's debugger, and we can run the target from visual studio
@@ -98,12 +65,11 @@ set_property(DIRECTORY PROPERTY VS_STARTUP_PROJECT psim.out)
 
 if(CMAKE_SKIP_INSTALL_RULES)
   return()
-elseif(NOT PROJECT_IS_TOP_LEVEL)
-  return()
 endif()
 
-include(FetchContent)
-package_project(TARGETS psim.out project_options project_warnings)
+include(cmake/PackageProject.cmake)
+
+psim_package_project(TARGETS psim.out psim_options psim_warnings)
 
 # Explicit package naming can help make it easier to sort
 # out potential ABI related issues before they start, while helping you

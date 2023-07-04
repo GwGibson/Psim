@@ -8,7 +8,7 @@ set(module_name "psim")
 add_library(${module_name} STATIC ${PSIM_SOURCES}) 
 target_link_libraries(
   ${module_name}
-  PUBLIC project_options project_warnings
+  PUBLIC psim_options psim_warnings
 )
 
 target_include_directories(psim PUBLIC 
@@ -24,5 +24,5 @@ add_executable(psim.out "./src/main.cpp")
 target_link_libraries(
   psim.out
   PUBLIC psim
-  PRIVATE project_options project_warnings
+  PRIVATE psim_options psim_warnings
 )

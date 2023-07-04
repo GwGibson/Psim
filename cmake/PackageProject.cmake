@@ -1,19 +1,7 @@
-include_guard()
-
 # Uses ycm (permissive BSD-3-Clause license) and ForwardArguments (permissive MIT license)
 
-# A function that packages the project for external usage (e.g. from vcpkg, Conan, etc).
-# See the [README.md] for more details
-function(package_project)
-  if(${CMAKE_VERSION} VERSION_LESS "3.18.0")
-    message(
-      WARNING
-        "Consider upgrading CMake to the latest version. CMake ${CMAKE_VERSION} does not support checking for policy CMP0103."
-    )
-  else()
-    cmake_minimum_required(VERSION 3.18)
-    cmake_policy(SET CMP0103 NEW) # disallow multiple calls with the same NAME
-  endif()
+function(psim_package_project)
+  cmake_policy(SET CMP0103 NEW) # disallow multiple calls with the same NAME
 
   set(_options ARCH_INDEPENDENT # default to false
   )
@@ -25,7 +13,7 @@ function(package_project)
       VERSION
       # default to semver
       COMPATIBILITY
-      # default to ${CMAKE_BINARY_DIR}/${NAME}
+      # default to ${CMAKE_BINARY_DIR}
       CONFIG_EXPORT_DESTINATION
       # default to ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_DATADIR}/${NAME} suitable for vcpkg, etc.
       CONFIG_INSTALL_DESTINATION)
@@ -33,14 +21,11 @@ function(package_project)
       # recursively found for the current folder if not specified
       TARGETS
       # a list of public/interface include directories or files
-      INTERFACE_INCLUDES
       PUBLIC_INCLUDES
       # the names of the INTERFACE/PUBLIC dependencies that are found using `CONFIG`
-      INTERFACE_DEPENDENCIES_CONFIGURED
       PUBLIC_DEPENDENCIES_CONFIGURED
       # the INTERFACE/PUBLIC dependencies that are found by any means using `find_dependency`.
       # the arguments must be specified within double quotes (e.g. "<dependency> 1.0.0 EXACT" or "<dependency> CONFIG").
-      INTERFACE_DEPENDENCIES
       PUBLIC_DEPENDENCIES
       # the names of the PRIVATE dependencies that are found using `CONFIG`. Only included when BUILD_SHARED_LIBS is OFF.
       PRIVATE_DEPENDENCIES_CONFIGURED
@@ -82,9 +67,9 @@ function(package_project)
     set(_PackageProject_COMPATIBILITY "SameMajorVersion")
   endif()
 
-  # default to the build_directory/project_name 
+  # default to the build directory
   if("${_PackageProject_CONFIG_EXPORT_DESTINATION}" STREQUAL "")
-    set(_PackageProject_CONFIG_EXPORT_DESTINATION "${CMAKE_BINARY_DIR}/${_PackageProject_NAME}")
+    set(_PackageProject_CONFIG_EXPORT_DESTINATION "${CMAKE_BINARY_DIR}")
   endif()
   set(_PackageProject_EXPORT_DESTINATION "${_PackageProject_CONFIG_EXPORT_DESTINATION}")
 
@@ -96,7 +81,6 @@ function(package_project)
   set(_PackageProject_INSTALL_DESTINATION "${_PackageProject_CONFIG_INSTALL_DESTINATION}")
 
   # Installation of the public/interface includes
-  set(_PackageProject_PUBLIC_INCLUDES "${_PackageProject_PUBLIC_INCLUDES}" "${_PackageProject_INTERFACE_INCLUDES}")
   if(NOT
      "${_PackageProject_PUBLIC_INCLUDES}"
      STREQUAL
@@ -117,8 +101,6 @@ function(package_project)
   endif()
 
   # Append the configured public dependencies
-  set(_PackageProject_PUBLIC_DEPENDENCIES_CONFIGURED "${_PackageProject_PUBLIC_DEPENDENCIES_CONFIGURED}"
-                                                     "${_PackageProject_INTERFACE_DEPENDENCIES_CONFIGURED}")
   if(NOT
      "${_PackageProject_PUBLIC_DEPENDENCIES_CONFIGURED}"
      STREQUAL
@@ -130,7 +112,7 @@ function(package_project)
   endif()
   list(APPEND _PackageProject_PUBLIC_DEPENDENCIES ${_PUBLIC_DEPENDENCIES_CONFIG})
   # ycm arg
-  set(_PackageProject_DEPENDENCIES ${_PackageProject_PUBLIC_DEPENDENCIES} ${_PackageProject_INTERFACE_DEPENDENCIES})
+  set(_PackageProject_DEPENDENCIES ${_PackageProject_PUBLIC_DEPENDENCIES})
 
   # Append the configured private dependencies
   if(NOT
@@ -146,21 +128,36 @@ function(package_project)
   list(APPEND _PackageProject_PRIVATE_DEPENDENCIES ${_PRIVATE_DEPENDENCIES_CONFIG})
 
   # Installation of package (compatible with vcpkg, etc)
-  set(_targets_list ${_PackageProject_TARGETS})
-  unset(_PackageProject_TARGETS) # to avoid ycm conflict
   install(
-    TARGETS ${_targets_list}
+    TARGETS ${_PackageProject_TARGETS}
     EXPORT ${_PackageProject_EXPORT}
     LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}" COMPONENT shlib
     ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}" COMPONENT lib
     RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}" COMPONENT bin
     PUBLIC_HEADER DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/${_PackageProject_NAME}" COMPONENT dev)
 
+  # install the usage file
+  set(_targets_str "")
+  foreach(_target ${_PackageProject_TARGETS})
+    set(_targets_str "${_targets_str} ${_PackageProject_NAMESPACE}${_target}")
+  endforeach()
+  set(USAGE_FILE_CONTENT
+      "The package ${_PackageProject_NAME} provides CMake targets:
+
+    find_package(${_PackageProject_NAME} CONFIG REQUIRED)
+    target_link_libraries(main PRIVATE ${_targets_str})
+  ")
+  install(CODE "MESSAGE(STATUS \"${USAGE_FILE_CONTENT}\")")
+  file(WRITE "${_PackageProject_EXPORT_DESTINATION}/usage" "${USAGE_FILE_CONTENT}")
+  install(FILES "${_PackageProject_EXPORT_DESTINATION}/usage"
+          DESTINATION "${_PackageProject_CONFIG_INSTALL_DESTINATION}")
+
+  unset(_PackageProject_TARGETS)
+
   # download ForwardArguments
   FetchContent_Declare(
     _fargs
-    URL https://github.com/polysquare/cmake-forward-arguments/archive/8c50d1f956172edb34e95efa52a2d5cb1f686ed2.zip
-    DOWNLOAD_EXTRACT_TIMESTAMP true)
+    URL https://github.com/polysquare/cmake-forward-arguments/archive/8c50d1f956172edb34e95efa52a2d5cb1f686ed2.zip)
   FetchContent_GetProperties(_fargs)
   if(NOT _fargs_POPULATED)
     FetchContent_Populate(_fargs)
@@ -180,8 +177,7 @@ function(package_project)
     "${_multiValueArgs};DEPENDENCIES;PRIVATE_DEPENDENCIES")
 
   # download ycm
-  FetchContent_Declare(_ycm URL https://github.com/robotology/ycm/archive/refs/tags/v0.13.0.zip
-  DOWNLOAD_EXTRACT_TIMESTAMP true)
+  FetchContent_Declare(_ycm URL https://github.com/robotology/ycm/archive/refs/tags/v0.13.0.zip)
   FetchContent_GetProperties(_ycm)
   if(NOT _ycm_POPULATED)
     FetchContent_Populate(_ycm)
@@ -189,22 +185,6 @@ function(package_project)
   include("${_ycm_SOURCE_DIR}/modules/InstallBasicPackageFiles.cmake")
 
   install_basic_package_files(${_PackageProject_NAME} "${_FARGS_LIST}")
-
-  # install the usage file
-  set(_targets_str "")
-  foreach(_target ${_targets_list})
-    set(_targets_str "${_targets_str} ${_PackageProject_NAMESPACE}${_target}")
-  endforeach()
-  set(USAGE_FILE_CONTENT
-      "# The package ${_PackageProject_NAME} provides the following CMake targets:
-
-    find_package(${_PackageProject_NAME} CONFIG REQUIRED)
-    target_link_libraries(main PRIVATE ${_targets_str})
-  ")
-  file(WRITE "${_PackageProject_EXPORT_DESTINATION}/usage" "${USAGE_FILE_CONTENT}")
-  install(FILES "${_PackageProject_EXPORT_DESTINATION}/usage"
-          DESTINATION "${_PackageProject_CONFIG_INSTALL_DESTINATION}")
-  install(CODE "MESSAGE(STATUS \"${USAGE_FILE_CONTENT}\")")
 
   include("${_ycm_SOURCE_DIR}/modules/AddUninstallTarget.cmake")
 endfunction()

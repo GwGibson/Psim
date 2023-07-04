@@ -1,11 +1,9 @@
-include_guard()
-
-# Set the compiler warnings
+# from here:
 #
-# https://clang.llvm.org/docs/DiagnosticsReference.html
 # https://github.com/lefticus/cppbestpractices/blob/master/02-Use_the_Tools_Available.md
+
 function(
-  set_project_warnings
+  psim_set_project_warnings
   project_name
   WARNINGS_AS_ERRORS
   MSVC_WARNINGS
@@ -71,17 +69,6 @@ function(
     )
   endif()
 
-  if("${CUDA_WARNINGS}" STREQUAL "")
-    set(CUDA_WARNINGS
-        -Wall
-        -Wextra
-        -Wunused
-        -Wconversion
-        -Wshadow
-        # TODO add more Cuda warnings
-    )
-  endif()
-
   if(WARNINGS_AS_ERRORS)
     message(TRACE "Warnings are treated as errors")
     list(APPEND CLANG_WARNINGS -Werror)
@@ -100,24 +87,13 @@ function(
     # TODO support Intel compiler
   endif()
 
-  # Add C warnings
+  # use the same warning flags for C
   set(PROJECT_WARNINGS_C "${PROJECT_WARNINGS_CXX}")
-  list(
-    REMOVE_ITEM
-    PROJECT_WARNINGS_C
-    -Wnon-virtual-dtor
-    -Wold-style-cast
-    -Woverloaded-virtual
-    -Wuseless-cast)
-
-  set(PROJECT_WARNINGS_CUDA "${CUDA_WARNINGS}")
 
   target_compile_options(
     ${project_name}
     INTERFACE # C++ warnings
               $<$<COMPILE_LANGUAGE:CXX>:${PROJECT_WARNINGS_CXX}>
               # C warnings
-              $<$<COMPILE_LANGUAGE:C>:${PROJECT_WARNINGS_C}>
-              # Cuda warnings
-              $<$<COMPILE_LANGUAGE:CUDA>:${PROJECT_WARNINGS_CUDA}>)
+              $<$<COMPILE_LANGUAGE:C>:${PROJECT_WARNINGS_C}>)
 endfunction()

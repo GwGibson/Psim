@@ -23,14 +23,8 @@
 - [Overview](#overview)
 - [Feature Set](#feature-set)
 - [Requirements](#requirements)
-  - [Docker](#docker)
 - [Build Instructions](#build-instructions)
-  - [(1) Specify the compiler using environment variables](#1-specify-the-compiler-using-environment-variables)
-    - [Commands for setting the compilers](#commands-for-setting-the-compilers)
-  - [(2) Configure your build](#2-configure-your-build)
-    - [(2a) Configuring via cmake](#2a-configuring-via-cmake)
-    - [(2b) Configuring via ccmake](#2b-configuring-via-ccmake)
-  - [(3) Build the project](#3-build-the-project)
+- [Dependencies](#dependencies)
 - [Python/JSON examples](#pythonjson-examples)
 - [Output Format](#output-format)
   - [Steady-State](#steady-state)
@@ -49,6 +43,8 @@
   - [Geometrical Limitations](#geometrical-limitations)
   - [Visualization Enchancements](#visualization-enchancements)
 - [References](#references)
+
+---
 
 ## Overview
 
@@ -77,182 +73,41 @@ The program is intended for researchers and engineers working in nanotechnology 
 
 ## Requirements
 
-The software has no dependencies or third-party requirements, although you may need [TBB](https://www.intel.com/content/www/us/en/developer/tools/oneapi/onetbb.html#gs.tkvwob) if your compiler does not support C++17 parallel algorithms and execution policy. CMake 3.15+ is required.
+The software has no dependencies or third-party requirements, although you may need [TBB](https://www.intel.com/content/www/us/en/developer/tools/oneapi/onetbb.html#gs.tkvwob) if your compiler does not support C++17 parallel algorithms and execution policy. CMake 3.21+ is required.
 
-See [tests](https://github.com/GwGibson/psim/actions/runs/4583903242) for working OS/compiler combinations.
-
-### Docker
-
-A Docker image is set up, but it is tailored toward development. It is not ideal for running simulations.
-
-If you have [Docker](https://www.docker.com/) installed, you can run this
-in your terminal, when the Dockerfile is inside the `.devcontainer` directory:
-
-```bash
-docker build -f ./.devcontainer/Dockerfile --tag=psim:latest .
-```
-
-This command will start building the Docker image, which may take several minutes
-if this is your first time creating the image. Once this process completes,
-run the following command to create a docker container:
-
-```bash
-docker run -it -v absolute_path_on_host_machine:/workspaces/psim psim:latest psim:latest
-```
-
-This command will put you in a `bash` session in a Ubuntu 22.04 Docker container with many dependencies and tools at your disposal.
-You will be in a directory that contains a copy of the psim, and your local copy will be mounted directly in the Docker image. See Docker volumes documentation for more information. You will also have `g++-11` and `clang++-14` installed as the default versions of `g++` and `clang++`.
-
-Once you exit the container, you can reaccess the container by using the command:
-
-```bash
-docker exec -it container_id /bin/bash
-```
-
-Most IDEs support containerized development, and Visual Studio Code makes the process painless. You can navigate to the project root directory and enter the command:
-
-```bash
-code .
-```
+See [tests](https://github.com/GwGibson/psim/actions/runs/5123185364) for working OS/compiler combinations.
 
 ## Build Instructions
 
-A full build has different steps:
+If you have all the necessary dependencies, you can run `make release` in the directory containing the `makefile`. The executable can then be found here: `build/psim/Release/psim.out`.
 
-1) Specifying the compiler using environment variables
-2) Configuring the project
-3) Building the project
+## Dependencies
 
-If you change the source code for the subsequent builds, you only need to repeat the last step.
+1. A C++ compiler that supports C++17.
+See [cppreference.com](https://en.cppreference.com/w/cpp/compiler_support)
+to see which features are supported by each compiler.
+The following compilers should work:
 
-### (1) Specify the compiler using environment variables
+   - [gcc 7+](https://gcc.gnu.org/)
+   - [clang 6+](https://clang.llvm.org/)
+   - [Visual Studio 2019 or higher](https://visualstudio.microsoft.com/)
+  
+2. [CMake 3.21+](https://cmake.org/)
+3. [Ninja Multi-Config](https://ninja-build.org/)
 
-By default (if you don't set environment variables `CC` and `CXX`), the system default compiler will be used.
-
-CMake uses the environment variables CC and CXX to decide which compiler to use. So to avoid conflict issues, only specify the compilers using these variables.
-
-#### Commands for setting the compilers
-
-- Debian/Ubuntu/MacOS:
-
-  Set your desired compiler (`clang`, `gcc`, etc.):
-
-  - Temporarily (only for the current shell)
-
-    Run one of the following in the terminal:
-
-    - clang
-
-      CC=clang CXX=clang++
-
-    - gcc
-
-      CC=gcc CXX=g++
-
-  - Permanent:
-
-    Open `~/.bashrc` using your text editor:
-
-    ```bash
-    gedit ~/.bashrc
-    ```
-
-    Add `CC` and `CXX` to point to the compilers:
-
-    ```bash
-    export CC=clang
-    export CXX=clang++
-    ```
-
-  Save and close the file.
-
-- Windows:
-
-  - Permanent:
-
-    Run one of the following in PowerShell:
-
-    - Visual Studio generator and compiler (cl)
-
-    ```bash
-    [Environment]::SetEnvironmentVariable("CC", "cl.exe", "User")
-    [Environment]::SetEnvironmentVariable("CXX", "cl.exe", "User")
-    refreshenv
-    ```
-
-    - Set the architecture using [vcvarsall](https://docs.microsoft.com/en-us/cpp/build/building-on-the-command-line?view=vs-2019#vcvarsall-syntax):
-
-      ```bash
-      vcvarsall.bat x64
-      ```
-
-    - clang
-
-      ```bash
-      [Environment]::SetEnvironmentVariable("CC", "clang.exe", "User")
-      [Environment]::SetEnvironmentVariable("CXX", "clang++.exe", "User")
-      refreshenv
-      ```
-
-    - gcc
-
-      ```bash
-      [Environment]::SetEnvironmentVariable("CC", "gcc.exe", "User")
-      [Environment]::SetEnvironmentVariable("CXX", "g++.exe", "User")
-      refreshenv
-      ```
-
-  - Temporarily (only for the current shell):
-
-    ```bash
-    $Env:CC="clang.exe"
-    $Env:CXX="clang++.exe"
-    ```
-
-### (2) Configure your build
-
-To configure the project, you could use `cmake`, `ccmake` or `cmake-gui`.
-
-#### (2a) Configuring via cmake
-
-With Cmake directly:
+On Debian/Ubuntu, these can be installed by running the following commands:
 
 ```bash
-cmake -S . -B ./build
+sudo apt update
+sudo apt install cmake
+sudo bash -c "$(wget -O - https://apt.llvm.org/llvm.sh)"
+sudo apt install ninja-build
 ```
 
-Cmake will automatically create the `./build` folder if it does not exist and configure the project.
-
-Instead, if you have CMake version 3.21+, you can use one of the configuration presets listed in the CmakePresets.json file.
+Then navigate to the directory containing `makefile` and run the command:
 
 ```bash
-cmake . --preset <configure-preset>
-cmake --build
-```
-
-#### (2b) Configuring via ccmake
-
-With the Cmake Curses Dialog Command Line tool:
-
-```bash
-ccmake -S . -B ./build
-```
-
-Once `ccmake` has finished setting up, press 'c' to configure psim,
-press 'g' to generate and 'q' to quit.
-
-### (3) Build the project
-
-Once you have selected all the options you would like to use, you can build psim:
-
-```bash
-cmake --build ./build
-```
-
-For Visual Studio, give the build configuration (Release, RelWithDeb, Debug, etc.) like the following:
-
-```bash
-cmake --build ./build -- /p:configuration=Release
+make release
 ```
 
 ---
@@ -273,14 +128,14 @@ Some pre-built configurations can be found at `psim_python\psim\pre_builts.py`. 
 
 The table below outlines the data found in the output files.
 
-| Quantity  | Description                                 |
-|-----------|---------------------------------------------|
-| temp      | Temperature              |
-| temp std  | Standard deviation of the temperature       |
-| x-flux    | Phonon flux in the x-direction              |
-| x-flux std| Standard deviation of the phonon flux in x  |
-| y-flux    | Phonon flux in the y-direction              |
-| y-flux std| Standard deviation of the phonon flux in y  |
+| Quantity   | Description                                |
+| ---------- | ------------------------------------------ |
+| temp       | Temperature                                |
+| temp std   | Standard deviation of the temperature      |
+| x-flux     | Phonon flux in the x-direction             |
+| x-flux std | Standard deviation of the phonon flux in x |
+| y-flux     | Phonon flux in the y-direction             |
+| y-flux std | Standard deviation of the phonon flux in y |
 
 ### Steady-State
 
@@ -288,7 +143,7 @@ The first line contains details about the run.
 The remaining lines follow the format:
 
 | temp | temp std | x-flux | x-flux std | y-flux | y-flux std |
-|------|----------|--------|------------|--------|------------|
+| ---- | -------- | ------ | ---------- | ------ | ---------- |
 
 Each entry corresponds to the associated sensor in the .json file. That is, the first entry corresponds with the first sensor, etc.
 
@@ -297,14 +152,14 @@ Each entry corresponds to the associated sensor in the .json file. That is, the 
 The first line contains details about the run.
 The remaining lines follow the format:
 
-|simulation step|
-|------|
+| simulation step |
+| --------------- |
 
-|number of sensors or number of measurements that follow this line|
-|------|
+| number of sensors or number of measurements that follow this line |
+| ----------------------------------------------------------------- |
 
 | temp | temp std | x-flux | x-flux std | y-flux | y-flux std |
-|------|----------|--------|------------|--------|------------|
+| ---- | -------- | ------ | ---------- | ------ | ---------- |
 
 This pattern is repeated to give chronological snapshots of the system and these can be strung together to see the system evolution.
 

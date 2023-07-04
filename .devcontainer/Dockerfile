@@ -13,14 +13,6 @@ RUN apt-get update -qq && export DEBIAN_FRONTEND=noninteractive && \
         make ninja-build git \
         python3 python3-pip
 
-# Install conan
-RUN python3 -m pip install --upgrade pip setuptools && \
-    python3 -m pip install conan==1.59.0 && \
-    conan --version
-
-ENV CONAN_SYSREQUIRES_SUDO 0
-ENV CONAN_SYSREQUIRES_MODE enabled
-
 # User-settable versions:
 # This Dockerfile should support gcc-[7, 8, 9, 10, 11] and clang-[10, 11, 12, 13, 14]
 # Earlier versions of clang will require significant modifications to the IWYU section
@@ -66,12 +58,12 @@ RUN wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/nul
 # Install editors
 RUN apt-get update -qq && export DEBIAN_FRONTEND=noninteractive && \
     apt-get install -y --no-install-recommends \
-        neovim emacs nano
+        neovim
 
 # Install optional dependencies
 RUN apt-get update -qq && export DEBIAN_FRONTEND=noninteractive && \
     apt-get install -y --no-install-recommends \
-        doxygen graphviz ccache cppcheck tmux unzip python3.10-venv
+        doxygen graphviz ccache cppcheck
 
 # Install include-what-you-use
 ENV IWYU /home/iwyu

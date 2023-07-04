@@ -14,10 +14,6 @@ debug:
 	cmake -S ./ -B ./build -G "Ninja Multi-Config" -DENABLE_DEVELOPER_MODE:BOOL=ON -DCMAKE_BUILD_TYPE:STRING=Debug
 	cmake --build ./build --config Debug
 
-docs:
-	cmake -S ./ -B ./build -G "Ninja Multi-Config" -DCMAKE_BUILD_TYPE:STRING=Debug -DENABLE_DEVELOPER_MODE:BOOL=ON -DOPT_ENABLE_DOXYGEN:BOOL=ON
-	cmake --build ./build --target doxygen-docs --config Debug
-
 format:
 ifeq ($(OS), Windows_NT)
 	pwsh -c '$$files=(git ls-files --exclude-standard); foreach ($$file in $$files) { if ((get-item $$file).Extension -in ".cpp", ".hpp", ".c", ".cc", ".cxx", ".hxx", ".ixx") { clang-format -i -style=file $$file } }'
