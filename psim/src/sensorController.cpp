@@ -8,8 +8,8 @@
 
 
 namespace {
-// Sensor temperature must be within this percentage to be considered stable -> 0.005 = 0.5%
-constexpr double RESET_THRESHOLD{ 0.005 };
+// Sensor temperature must be within this percentage to be considered stable -> 0.0005 = 0.05%
+constexpr double RESET_THRESHOLD{ 0.0005 };
 // Temperature at each measurement step must be within this percentage to be considered stable
 // compared to the temperature at that step on the previous simulation iteration
 constexpr double TRANSIENT_RESET_THRESHOLD{ 0.02 };
