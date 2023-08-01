@@ -110,8 +110,6 @@ public:
     [[nodiscard]] bool resetRequired([[maybe_unused]] double t_final,
         std::vector<double>&& final_temps) noexcept override;
     void reset() noexcept override;
-
-private:
 };
 
 #endif// PSIM_SENSORCONTROLLER_H

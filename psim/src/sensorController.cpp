@@ -8,8 +8,8 @@
 
 
 namespace {
-// Sensor temperature must be within this percentage to be considered stable -> 0.0005 = 0.05%
-constexpr double RESET_THRESHOLD{ 0.0005 };
+// Sensor temperature must be within this percentage to be considered stable -> 0.001 = 0.1%
+constexpr double RESET_THRESHOLD{ 0.001 };
 // Temperature at each measurement step must be within this percentage to be considered stable
 // compared to the temperature at that step on the previous simulation iteration
 constexpr double TRANSIENT_RESET_THRESHOLD{ 0.02 };
@@ -58,7 +58,7 @@ void SensorController::scatterUpdate(Phonon& p) const noexcept {// NOLINT
 
 bool SensorController::resetRequired(double t_final, [[maybe_unused]] std::vector<double>&& temps) noexcept {
     const auto t_diff = std::fabs(t_final - t_steady_);
-    const bool temp_stable = t_diff / t_steady_ <= RESET_THRESHOLD || t_diff < 1.;
+    const bool temp_stable = t_diff / t_steady_ <= RESET_THRESHOLD;
     t_steady_ = t_final;
     return temp_stable;
 }
