@@ -38,11 +38,11 @@ for sim_type, name in zip(sim_types,names):
 names = ['ss', 'per', 'trans']
 for name in names:
     plot_file = f'linear_sides_demo_{name}.json'
-    json_filepath = f'demo_json/{plot_file}'      
-    results_filepath = f'demo_results/{name}_{plot_file[:-4]}txt'
+    json_filepath = f'json/{plot_file}'      
+    results_filepath = f'json/results/{name}_{plot_file[:-4]}txt'
     
     if (name != 'ss'):
-        results_filepath = f'demo_results/per_{plot_file[:-4]}txt'
+        results_filepath = f'json/results/per_{plot_file[:-4]}txt'
         mp.animate(json_filepath, results_filepath)
     else:
         mp.plot(json_filepath, results_filepath, square_axes=False)

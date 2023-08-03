@@ -29,24 +29,23 @@ gd_data = DispersionData((-1.50e-7, 5.63e3, 0.), 4.45236386e13,
 gr_data = RelaxationData(2.3e-24, 30.0e-13, 1.5e-18, 0., 1.23e13)
 
 silicon = Material("Silicon", sd_data, sr_data)
-germanium = Material("Germanium", gd_data, gr_data) # not used
+germanium = Material("Germanium", gd_data, gr_data)  # not used
 
 
-def simple_linear(num_cells: int, t_high: float, t_low: float, t_init: float, t_eq: float,
-                  x_base: float, y_base: float, spec: int=1, sim_type: int=0,
-                  step_interval: int=0) -> ModelBuilder:
-    b = ModelBuilder() 
+def simple_linear(num_cells: int, t_high: float, t_low: float, t_init: float,
+                  t_eq: float, x_base: float, y_base: float, spec: int = 1,
+                  sim_type: int = 0, step_interval: int = 0) -> ModelBuilder:
+    b = ModelBuilder()
     # Specify general model settings
     b.setSimType(sim_type, step_interval)
     b.t_eq = t_eq
     # The model will be comprised of a single material
     b.addMaterial(silicon)
-    
-    avg_temp = (t_high + t_low) / 2
+
     # Create the cell component
     for i in range(num_cells):
         # Sensor must be added first
-        s_id = b.addSensor(silicon.name, avg_temp)
+        s_id = b.addSensor(silicon.name, t_init)
         lower_left_point = (i*x_base, 0.)
         top_right_point = ((i+1)*x_base, y_base)
         # The cell must be attached to a sensor
