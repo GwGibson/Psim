@@ -1,9 +1,3 @@
-set(CMAKE_EXE_LINKER_FLAGS "-static -static-libgcc -static-libstdc++")
-
-if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=skylake-avx512")
-endif()
-
 file(GLOB_RECURSE PSIM_SOURCES
         "${CMAKE_CURRENT_SOURCE_DIR}/include/*.hpp" # Header files
         "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp" # Source files
