@@ -31,5 +31,15 @@ function(psim_setup_dependencies)
   #  if(NOT TARGET CLI11::CLI11)
   #    cpmaddpackage("gh:CLIUtils/CLI11@2.3.2")
   #  endif()
+  
+  if(NOT TARGET TBB::tbb)
+    cpmaddpackage(
+      NAME TBB
+      VERSION 2021.10.0
+      URL https://github.com/oneapi-src/oneTBB/archive/refs/tags/v2021.10.0.tar.gz
+      OPTIONS
+        "TBB_TEST OFF"  
+    )
+  endif()
 
 endfunction()

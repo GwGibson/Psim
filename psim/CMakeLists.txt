@@ -6,6 +6,7 @@ file(GLOB_RECURSE PSIM_SOURCES
 
 set(module_name "psim")
 add_library(${module_name} STATIC ${PSIM_SOURCES}) 
+
 target_link_libraries(
   ${module_name}
   PUBLIC psim_options psim_warnings
@@ -24,5 +25,5 @@ add_executable(psim.out "./src/main.cpp")
 target_link_libraries(
   psim.out
   PUBLIC psim
-  PRIVATE psim_options psim_warnings
+  PRIVATE psim_options psim_warnings TBB::tbb
 )
