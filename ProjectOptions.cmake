@@ -102,7 +102,7 @@ macro(psim_local_options)
     # Statically link the standard libraries to allow the executable to run
     # on servers with older software
     if (psim_STATIC_LINK_LIBC)
-      set(CMAKE_EXE_LINKER_FLAGS "-static-libgcc -static-libstdc++")     
+      set(CMAKE_EXE_LINKER_FLAGS "-static -static-libgcc -static-libstdc++")     
     endif()
   endif()
 

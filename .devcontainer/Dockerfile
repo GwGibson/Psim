@@ -60,10 +60,28 @@ RUN apt-get update -qq && export DEBIAN_FRONTEND=noninteractive && \
     apt-get install -y --no-install-recommends \
         neovim
 
-# Install optional dependencies
+# Install dependencies
 RUN apt-get update -qq && export DEBIAN_FRONTEND=noninteractive && \
     apt-get install -y --no-install-recommends \
-        doxygen graphviz ccache cppcheck libtbb-dev
+        doxygen graphviz ccache cppcheck
+
+# Download TBB source code
+WORKDIR /tmp
+RUN wget https://github.com/oneapi-src/oneTBB/archive/refs/tags/v2021.10.0.tar.gz && \
+    tar -xzvf v2021.10.0.tar.gz && \
+    rm v2021.10.0.tar.gz
+
+# Build TBB with static libraries
+WORKDIR /tmp/oneTBB-2021.10.0
+RUN cmake -DBUILD_SHARED_LIBS=OFF -DTBB_TEST=OFF . && \
+    make
+
+# Install TBB
+RUN make install
+
+# Clean up temporary files
+WORKDIR /
+RUN rm -rf /tmp/oneTBB-2021.10.0
 
 # Install include-what-you-use
 ENV IWYU /home/iwyu
