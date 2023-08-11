@@ -33,5 +33,5 @@ add_executable(${module_name}.out "./src/main.cpp")
 target_link_libraries(
   ${module_name}.out
   PUBLIC ${module_name}
-  PRIVATE ${module_name}_options ${module_name}_warnings TBB::tbb
+  PRIVATE ${module_name}_options ${module_name}_warnings
 )
