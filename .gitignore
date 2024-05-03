@@ -170,6 +170,7 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+psim_python/.venv
 
 # Spyder project settings
 .spyderproject

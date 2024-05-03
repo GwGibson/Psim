@@ -195,7 +195,7 @@ bool Triangle::contains(const Point& p) const noexcept {// NOLINT
         try {
             auto t = Triangle(pt1, pt2, pt3);// NOLINT
             return t.area();
-        } catch (const TriangleError& e) { return 0.; }
+        } catch (const TriangleError&) { return 0.; }
     };
 
     // bp1, bp2, d00, d01, d11 & denom can all be cached if necessary

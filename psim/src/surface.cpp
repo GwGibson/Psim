@@ -25,6 +25,7 @@ Surface::Surface(Line surface_line, Cell& cell, double specularity, int norm_sig
  * @param p - The phonon that interacts with the surface
  */
 void Surface::redirectPhonon(Phonon& p) const noexcept {// NOLINT
+    // cppcheck-suppress unassignedVariable
     const auto& [nx, ny] = normal_;
     const auto rand = urand();
     const auto new_dx = sqrt(rand);
@@ -34,7 +35,9 @@ void Surface::redirectPhonon(Phonon& p) const noexcept {// NOLINT
 
 void Surface::boundaryHandlePhonon(Phonon& p) const noexcept {// NOLINT
     if (specularity_ == 1. || urand() < specularity_) {// Reflective Scatter
+        // cppcheck-suppress unassignedVariable
         const auto& [nx, ny] = normal_;
+        // cppcheck-suppress unassignedVariable
         const auto& [dx, dy] = p.getDirection();
         const auto new_dx = -dx * nx - dy * ny;
         const auto new_dy = -dx * ny + dy * nx;

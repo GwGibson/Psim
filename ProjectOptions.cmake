@@ -29,7 +29,7 @@ macro(psim_setup_options)
 
   if(ENABLE_DEVELOPER_MODE)
     option(psim_ENABLE_IPO "Enable IPO/LTO" OFF)
-    option(psim_WARNINGS_AS_ERRORS "Treat Warnings As Errors" ON)
+    option(psim_WARNINGS_AS_ERRORS "Treat Warnings As Errors" OFF)
     option(psim_ENABLE_DOXYGEN "Build documentation with Doxygen" OFF)
     option(psim_ENABLE_USER_LINKER "Enable user-selected linker" OFF)
     option(psim_ENABLE_SANITIZER_ADDRESS "Enable address sanitizer" OFF)

@@ -82,7 +82,7 @@ See [tests](https://github.com/GwGibson/psim/actions/runs/5123185364) for workin
 
 ## Build Instructions
 
-If you have all the necessary dependencies, you can run `make release` in the directory containing the `makefile`. The executable can then be found here: `build/psim/Release/psim.out`.
+If you have all the necessary dependencies, you can run `make release` in the directory containing the `makefile`. The executable can then be found here: `build/psim/Release/psim`.
 
 ## Dependencies
 
@@ -120,7 +120,7 @@ make release
 In the `python_sim` folder, there are 3 `.py` files. Running these files should produce the `.json` files in the `.json` folder. These are the files you can pass into the psim program. For example, if you put the `.json` files in the same directory as the psim executable, then you can run all five simulations using the command:
 
 ```bash
-./psim.out *.json
+./psim *.json
 ```
 
 Some pre-built configurations can be found at `psim_python\psim\pre_builts.py`. This can give an idea of how to construct your systems, but this can be a complicated process depending on the intricacies of your desired configuration.

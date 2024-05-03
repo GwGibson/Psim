@@ -109,8 +109,8 @@ void Material::initializeTables(double low_temp, double high_temp, float temp_in
 
     for (const auto& temp : temps_) {
         // TODO: This can be optimized - but not too important since only called once
-        Array la_base = phononDist(temp, Polar::LA);
-        Array ta_base = phononDist(temp, Polar::TA);
+        const Array la_base = phononDist(temp, Polar::LA);
+        const Array ta_base = phononDist(temp, Polar::TA);
         const auto heat_capacity = std::accumulate(std::cbegin(la_base), std::cend(la_base), 0.)
                                    + std::accumulate(std::cbegin(ta_base), std::cend(ta_base), 0.);
 

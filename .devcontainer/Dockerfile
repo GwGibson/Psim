@@ -63,7 +63,7 @@ RUN apt-get update -qq && export DEBIAN_FRONTEND=noninteractive && \
 # Install dependencies
 RUN apt-get update -qq && export DEBIAN_FRONTEND=noninteractive && \
     apt-get install -y --no-install-recommends \
-        doxygen graphviz ccache cppcheck libtbb-dev
+        doxygen graphviz ccache cppcheck libtbb-dev unzip python3.10-venv
 
 # Install include-what-you-use
 ENV IWYU /home/iwyu

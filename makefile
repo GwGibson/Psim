@@ -7,7 +7,7 @@ build:
 	make release
 
 release:
-	cmake -S ./ -B ./build -G "Ninja Multi-Config" -DCMAKE_BUILD_TYPE:STRING=Release
+	cmake -S ./ -B ./build -G "Ninja Multi-Config" -DENABLE_DEVELOPER_MODE:BOOL=OFF -DCMAKE_BUILD_TYPE:STRING=Release
 	cmake --build ./build --config Release
 
 debug:

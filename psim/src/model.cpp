@@ -20,7 +20,7 @@
 
 namespace {
 // Maximum number of simulations resets
-constexpr std::size_t MAX_ITERS{ 5 };
+constexpr std::size_t MAX_ITERS{ 1 };
 // Threshold (percentage) of sensors that must be stable for the system to be considered stable
 constexpr std::size_t RESET_THRESHOLD{ 90 };
 // Threshold (percentage*1000) that t_eq must be within between runs for the system to be considered stable

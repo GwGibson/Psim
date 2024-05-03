@@ -61,7 +61,7 @@ if(MSVC)
 endif()
 
 # For the "play" button in MSVC
-set_property(DIRECTORY PROPERTY VS_STARTUP_PROJECT psim.out)
+set_property(DIRECTORY PROPERTY VS_STARTUP_PROJECT psim)
 
 if(CMAKE_SKIP_INSTALL_RULES)
   return()
@@ -69,7 +69,7 @@ endif()
 
 include(cmake/PackageProject.cmake)
 
-psim_package_project(TARGETS psim.out psim_options psim_warnings)
+psim_package_project(TARGETS psim psim_options psim_warnings)
 
 # Explicit package naming can help make it easier to sort
 # out potential ABI related issues before they start, while helping you
@@ -79,7 +79,7 @@ set(CPACK_PACKAGE_FILE_NAME
 )
 
 include(InstallRequiredSystemLibraries)
-install(TARGETS psim.out
+install(TARGETS psim
         RUNTIME DESTINATION bin)
         
 set(CPACK_PACKAGE_NAME "psim")

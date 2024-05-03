@@ -1,18 +1,17 @@
 #include "psim/inputManager.h"
-#include "psim/geometry.h"// for Point, Triangle
-#include "psim/json.h"// for basic_json, basic_json<>::value_type, bas...
-#include "psim/material.h"// for Material, DispersionData, RelaxationData
-#include "psim/model.h"// for Model
-#include "psim/sensor.h"// for Sensor, Sensor::SimulationType
-#include <array>// for array
-#include <cstddef>// for size_t
-#include <exception>// for exception
-#include <fstream>// for basic_ifstream
-#include <iostream>// for char_traits, operator<<, basic_ostream, cerr
-#include <sstream>// for basic_stringbuf<>::int_type, basic_string...
-#include <stdexcept>// for out_of_range, runtime_error
-#include <string>// for allocator, basic_string, operator==, string
-#include <utility>// for move
+#include "psim/geometry.h"
+#include "psim/material.h"
+#include "psim/model.h"
+#include "psim/sensor.h"
+#include <array>
+#include <cstddef>
+#include <exception>
+#include <fstream>
+#include <iostream>
+#include <nlohmann/json.hpp>
+#include <stdexcept>
+#include <string>
+#include <utility>
 
 using json = nlohmann::json;
 using Point = Geometry::Point;
@@ -39,8 +38,8 @@ std::optional<Model> InputManager::deserialize(const std::filesystem::path& file
 
         auto la_data = static_cast<std::array<double, 3>>(jd_data.at("la_data"));
         auto ta_data = static_cast<std::array<double, 3>>(jd_data.at("ta_data"));
-        DispersionData d_data{ la_data, ta_data, jd_data.at("max_freq_la"), jd_data.at("max_freq_ta") };
-        RelaxationData r_data{
+        const DispersionData d_data{ la_data, ta_data, jd_data.at("max_freq_la"), jd_data.at("max_freq_ta") };
+        const RelaxationData r_data{
             jr_data.at("b_l"), jr_data.at("b_tn"), jr_data.at("b_tu"), jr_data.at("b_i"), jr_data.at("w")
         };
         auto material = Material(id, d_data, r_data);
@@ -55,12 +54,13 @@ std::optional<Model> InputManager::deserialize(const std::filesystem::path& file
         Triangle t{ getPoint(t_data.at("p1")), getPoint(t_data.at("p2")), getPoint(t_data.at("p3")) };// NOLINT
         model.addCell(std::move(t), c_data.at("sensorID"), c_data.at("specularity"));// NOLINT
     };
+
     // ************************ End Helper methods **********************************
 
     if (is_regular_file(filepath)) {
         if (std::ifstream file(filepath.string().data()); file.is_open()) {
-            json jdata;
             try {
+                json jdata;
                 file >> jdata;
 
                 const auto& settings = jdata.at("settings");
