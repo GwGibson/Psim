@@ -1,14 +1,6 @@
 #include "psim/phonon.h"
-#include "psim/cell.h"// for Cell
-#include "psim/geometry.h"// for Point, Line (ptr only)
-#include "psim/material.h"// for Material
-#include "psim/utils.h"// for PI
-#include <array>// for array
-#include <cmath>// for cos, sqrt
-#include <cstddef>// for size_t
-#include <stdexcept>// for runtime_error
-#include <string>// for string, allocator
-
+#include "psim/cell.h"
+#include "psim/utils.h"
 
 Phonon::Phonon(signed char sign, double lifetime, Cell* cell)// NOLINT
     : sign_{ sign }
@@ -20,7 +12,7 @@ Phonon::Phonon(signed char sign, double lifetime, Cell* cell)// NOLINT
 void Phonon::scatterUpdate(std::size_t freq_index,// NOLINT
     double freq,
     double velocity,
-    Phonon::Polarization polar) noexcept {
+    Polarization polar) noexcept {
     freq_index_ = freq_index;
     freq_ = freq;
     velocity_ = velocity;

@@ -1,19 +1,12 @@
 #include "psim/outputManager.h"
-#include "psim/sensor.h"// for SensorMeasurements
-#include <algorithm>// for sort
-#include <chrono>// for system_clock
-#include <ctime>// for localtime, size_t
-#include <execution>// for seq
-#include <filesystem>// for path, operator<<
-#include <fstream>// basic_ofstream
-#include <functional>// for plus
-#include <iomanip>// for operator<<, put_time
-#include <iterator>// for cbegin, begin, end
-#include <memory>// for allocator_traits<>::value_type
-#include <numeric>// for accumulate
-#include <ostream>// for operator<<, basic_ostream, basic...
-#include <sstream>// for basic_stringbuf<>::int_type, bas...
-
+#include "psim/sensor.h"
+#include <chrono>
+#include <ctime>
+#include <execution>
+#include <fstream>
+#include <iomanip>
+#include <numeric>
+#include <sstream>
 
 void OutputManager::steadyStateExport(const fs::path& filepath, double time) const {
     std::ofstream output{ adjustPath(filepath, "ss_").string(), std::ios_base::trunc };// Overwrites existing file
@@ -66,11 +59,11 @@ void OutputManager::periodicExport(const fs::path& filepath, double time) const 
 }
 
 void OutputManager::addMeasurement(SensorMeasurements&& measurement) noexcept {
-    measurements_.push_back(measurement);
+    measurements_.emplace_back(std::move(measurement));
 }
 
 void OutputManager::sortMeasurements() noexcept {
-    std::sort(std::begin(measurements_), std::end(measurements_), [](const auto& m1, const auto& m2) {// NOLINT
+    std::ranges::sort(measurements_, [](const auto& m1, const auto& m2) {// NOLINT
         return m1.id < m2.id;
     });
 }
@@ -78,15 +71,22 @@ void OutputManager::sortMeasurements() noexcept {
 std::filesystem::path OutputManager::adjustPath(const fs::path& filepath, const std::string& prepend) {
     auto new_path = filepath;
     new_path.replace_extension(".txt");
-    auto filename = new_path.filename().string();
+    const auto filename = new_path.filename().string();
     new_path.replace_filename(prepend + filename);
     return new_path;
 }
 
 std::string OutputManager::getCurrentDateTime() {
     const auto now = std::chrono::system_clock::now();
-    const auto in_time_t = std::chrono::system_clock::to_time_t(now);
-    std::stringstream ss;// NOLINT
-    ss << std::put_time(std::localtime(&in_time_t), "%Y-%m-%d %X");// NOLINT (function not thread safe)
-    return ss.str();
+    const auto rounded_down = std::chrono::floor<std::chrono::seconds>(now);
+    const auto rounded_down_time_t = std::chrono::system_clock::to_time_t(rounded_down);
+    std::tm tm_time;
+#ifdef _WIN32
+    if (localtime_s(&tm_time, &rounded_down_time_t) != 0) { return "Unknown Time"; }
+#else
+    if (localtime_r(&rounded_down_time_t, &tm_time) == nullptr) { return "Unknown Time"; }
+#endif
+    std::ostringstream oss;
+    oss << std::put_time(&tm_time, "%Y-%m-%d %X");
+    return oss.str();
 }

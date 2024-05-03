@@ -1,13 +1,7 @@
 #include "psim/compositeSurface.h"
-#include "psim/geometry.h"// for operator<<, Line
-#include "psim/surface.h"// for EmitSurface, TransitionSurface, Surface
-#include <algorithm>// for find_if, max
-#include <iterator>// for cend, cbegin
-#include <memory>// for allocator_traits<>::value_type
-#include <sstream>// for operator<<, basic_ostream, basic_ostri...
-#include <string>// for char_traits, basic_string
-#include <utility>// for move
-#include <vector>// for vector
+#include "psim/geometry.h"
+#include <ranges>
+#include <sstream>
 
 class Cell;
 class Material;
@@ -16,7 +10,7 @@ class Phonon;
 using Line = Geometry::Line;
 
 CompositeSurface::CompositeSurface(Surface&& main_surface)
-    : main_surface_{ main_surface } {
+    : main_surface_{ std::move(main_surface) } {
 }
 
 void CompositeSurface::updateEmitSurfaceTables() noexcept {
@@ -52,18 +46,15 @@ bool CompositeSurface::addTransitionSurface(const Line& surface_line, Cell& cell
 
 void CompositeSurface::handlePhonon(Phonon& p, const Point& poi, double step_time) const noexcept {// NOLINT
     // Search transitions surfaces first since, in most scenarios, this will be the most likely impact surface
-    auto transition_it = std::find_if(std::cbegin(transition_sub_surfaces_),
-        std::cend(transition_sub_surfaces_),
-        [&poi](const auto& t_surface) { return t_surface.getSurfaceLine().contains(poi); });
-
-    if (transition_it != std::cend(transition_sub_surfaces_)) {
+    if (const auto transition_it = std::ranges::find_if(transition_sub_surfaces_,
+            [&poi](const auto& t_surface) { return t_surface.getSurfaceLine().contains(poi); });
+        transition_it != std::cend(transition_sub_surfaces_)) {
         transition_it->handlePhonon(p);
         return;
     }
     // Check emit surfaces next
-    auto emit_it = std::find_if(std::cbegin(emit_sub_surfaces_),
-        std::cend(emit_sub_surfaces_),
-        [&poi](const auto& e_surface) { return e_surface.getSurfaceLine().contains(poi); });
+    const auto emit_it = std::ranges::find_if(
+        emit_sub_surfaces_, [&poi](const auto& e_surface) { return e_surface.getSurfaceLine().contains(poi); });
 
     if (emit_it != std::cend(emit_sub_surfaces_)) {
         emit_it->handlePhonon(p, step_time);

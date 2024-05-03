@@ -1,15 +1,11 @@
 #ifndef PSIM_OUTPUTMANAGER_H
 #define PSIM_OUTPUTMANAGER_H
 
-#include "sensor.h"// for SensorMeasurements
-#include <chrono>// for filesystem
-#include <cstddef>// for size_t
-#include <filesystem>// for path
-#include <string>// for string
-#include <vector>// for vector
+#include <filesystem>
+#include <vector>
 
+struct SensorMeasurements;
 namespace fs = std::filesystem;
-
 
 class OutputManager {
 public:

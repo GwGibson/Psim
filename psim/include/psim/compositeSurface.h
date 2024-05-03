@@ -1,18 +1,11 @@
 #ifndef PSIM_COMPOSITESURFACE_H
 #define PSIM_COMPOSITESURFACE_H
 
-#include "geometry.h"// for Line, Point
-#include "surface.h"// for Surface, EmitSurface, TransitionSurface
-#include <exception>// for exception
-#include <iosfwd>// for ostream
-#include <string>// for string
-#include <string_view>// for string_view
-#include <vector>// for vector
+#include "surface.h"
 
 class Cell;
 class Material;
 class Phonon;
-
 
 class CompositeSurface {
 public:
@@ -79,6 +72,5 @@ private:
     Geometry::Line main_;
     Geometry::Line inc_;
 };
-
 
 #endif// PSIM_COMPOSITESURFACE_H

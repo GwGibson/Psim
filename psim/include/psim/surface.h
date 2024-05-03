@@ -33,23 +33,21 @@ public:
     [[nodiscard]] bool contains(const Point& point) const noexcept {
         return surface_line_.contains(point);
     }
-    [[nodiscard]] Point getRandPoint(double r1) const noexcept {
+    [[nodiscard]] Point getRandPoint(double r1) const noexcept {// NOLINT
         return surface_line_.getRandPoint(r1);
-    }// NOLINT
+    }
     [[nodiscard]] double getLength() const noexcept {
         return surface_line_.length;
     }
     [[nodiscard]] double getSpecularity() const noexcept {
         return specularity_;
     }
-
     [[nodiscard]] Vector2D getNormal() const noexcept {
         return normal_;
     }
     void setNormal(Vector2D normal) noexcept {
         normal_ = normal;
     }
-
     bool operator==(const Surface& rhs) const {
         return (surface_line_ == rhs.surface_line_);
     }
@@ -58,12 +56,12 @@ public:
     }
 
 private:
-    const Line surface_line_;
+    Line surface_line_;
 
 protected:
     Cell& cell_;
     Vector2D normal_;
-    const double specularity_;
+    double specularity_;
 };
 
 // While an emitting surface is not emitting phonons (transient case) it acts as a boundary surface

@@ -1,25 +1,12 @@
 #include "psim/model.h"
-#include "psim/cell.h"// for Cell
-#include "psim/compositeSurface.h"// for CompositeSurface
-#include "psim/material.h"// for Material
-#include "psim/modelSimulator.h"// for ModelSimulator
-#include "psim/outputManager.h"// for OutputManager
-#include "psim/sensorInterpreter.h"// for SensorInterpreter
-#include "psim/surface.h"// for EmitSurface
-#include <algorithm>// for find_if, max, minmax_element
-#include <array>// for array
-#include <cmath>// for fabs
-#include <execution>// for for_each, seq, par
-#include <functional>// for plus
-#include <iostream>// for operator<<, cout, ostream, basic...
-#include <iterator>// for end, cbegin, cend, begin
-#include <new>// for bad_alloc
-#include <stdexcept>// for runtime_error
-#include <tuple>// for tie, tuple
-#include <type_traits>// for enable_if_t
+#include "psim/geometry.h"
+#include <cmath>
+#include <execution>
+#include <iostream>
 
 namespace {
 // Maximum number of simulations resets
+// TODO: Reset method has some technical issues -> non-trivial fix is required
 constexpr std::size_t MAX_ITERS{ 1 };
 // Threshold (percentage) of sensors that must be stable for the system to be considered stable
 constexpr std::size_t RESET_THRESHOLD{ 90 };
@@ -72,7 +59,7 @@ void Model::setSimulationType(SimulationType type, std::size_t step_interval) {
                 std::string("Step interval of 0 is invalid for transient and periodic simulations.\n"));
         }
     }
-    if ((type == SimulationType::Transient && t_eq_ == 0)) {
+    if ((type == SimulationType::Transient && t_eq_ == 0)) {// NOLINT(clang-diagnostic-float-equal)
         throw std::runtime_error(std::string("Transient simulations must be run using the deviational approach.\n"));
     }
     if (type == SimulationType::SteadyState) {
@@ -99,7 +86,7 @@ void Model::addSensor(std::size_t ID,// NOLINT
     const std::string& material_name,
     double t_init,
     Sensor::SimulationType type) {
-    auto sensor = std::find_if(std::begin(sensors_), std::end(sensors_), [&ID](auto& s) {// NOLINT
+    auto sensor = std::ranges::find_if(sensors_, [&ID](auto& s) {// NOLINT
         return s.getID() == ID;
     });
     if (sensor == std::end(sensors_)) {
@@ -112,7 +99,7 @@ void Model::addSensor(std::size_t ID,// NOLINT
     }
 }
 
-void Model::addCell(Geometry::Triangle&& triangle, std::size_t sensor_ID, double spec) {
+void Model::addCell(Geometry::Triangle triangle, std::size_t sensor_ID, double spec) {
     if (cells_.size() >= num_cells_) { throw std::runtime_error(std::string("Too many cells\n")); }
     cells_.emplace_back(triangle, getSensor(sensor_ID), spec);
     Cell& inc_cell = cells_.back();
@@ -131,11 +118,11 @@ void Model::addCell(Geometry::Triangle&& triangle, std::size_t sensor_ID, double
 
 // Not used if the python interface is used
 void Model::addCell(Point&& p1, Point&& p2, std::size_t sensor_ID, double spec) {// NOLINT
-    if (p1.x == p2.x || p1.y == p2.y) {
+    if (Geometry::approxEqual(p1.x, p2.x) || Geometry::approxEqual(p1.y, p2.y)) {
         throw std::runtime_error(std::string("These points do not specify a rectangle\n"));
     }
-    addCell(Geometry::Triangle{ p1, Point(p1.x, p2.y), Point(p2.x, p1.y) }, sensor_ID, spec);
-    addCell(Geometry::Triangle{ p2, Point(p2.x, p1.y), Point(p1.x, p2.y) }, sensor_ID, spec);
+    addCell(Geometry::Triangle{ p1, { p1.x, p2.y }, { p2.x, p1.y } }, sensor_ID, spec);
+    addCell(Geometry::Triangle{ p2, { p2.x, p1.y }, { p1.x, p2.y } }, sensor_ID, spec);
 }
 
 // TODO: Fix emit surface placement failing when incoming surface is not exact in rare circumstances
@@ -215,10 +202,9 @@ std::pair<double, double> Model::setTemperatureBounds() noexcept {
         temperatures.push_back(cell.getInitTemp());
         for (const auto& surface : cell.getBoundaries()) {
             const auto& emit_surfaces = surface.getEmitSurfaces();
-            std::transform(std::cbegin(emit_surfaces),
-                std::cend(emit_surfaces),
-                std::back_inserter(temperatures),
-                [](const auto& emit_surface) { return emit_surface.getTemp(); });
+            std::ranges::transform(emit_surfaces, std::back_inserter(temperatures), [](const auto& emit_surface) {
+                return emit_surface.getTemp();
+            });
         }
     }
     const auto [min, max] = std::minmax_element(std::cbegin(temperatures), std::cend(temperatures));

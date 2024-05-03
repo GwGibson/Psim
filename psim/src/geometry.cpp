@@ -6,15 +6,7 @@
 #include <sstream>// for basic_ostringstream
 #include <type_traits>// for add_const<>::type
 
-using Vector2D = Geometry::Vector2D;
-using Point = Geometry::Point;
-using Line = Geometry::Line;
-using Triangle = Geometry::Triangle;
-using PointPair = Geometry::PointPair;
-
-namespace {
-constexpr double GEOEPS{ 10e-9 };
-}
+namespace Geometry {
 
 [[nodiscard]] static PointPair findBoundingBox(const Line& line) noexcept;
 [[nodiscard]] static bool boxesIntersect(const PointPair& lhs, const PointPair& rhs) noexcept;
@@ -27,21 +19,24 @@ constexpr double GEOEPS{ 10e-9 };
 [[nodiscard]] static double getSlope(const Point& p1, const Point& p2) noexcept;// NOLINT
 [[nodiscard]] static double getIntercept(double x, double y, double slope) noexcept;// NOLINT
 
-std::ostream& Geometry::operator<<(std::ostream& os, const Point& point) {// NOLINT
+std::ostream& operator<<(std::ostream& os, const Point& point) {// NOLINT
     os << "Point (" << point.x << ", " << point.y << ')';
     return os;
 }
 
-Point Geometry::operator-(const Point& lhs, const Point& rhs) {
+Point operator-(const Point& lhs, const Point& rhs) {
     return { lhs.x - rhs.x, lhs.y - rhs.y };
 }
 
-bool Geometry::Point::operator==(const Point& rhs) const {
-    return (x <= rhs.x + GEOEPS && x >= rhs.x - GEOEPS) && (y <= rhs.y + GEOEPS && y >= rhs.y - GEOEPS);
+bool operator==(const Point& lhs, const Point& rhs) {
+    if (&lhs == &rhs) { return true; }
+    const auto dx = lhs.x - rhs.x;// NOLINT
+    const auto dy = lhs.y - rhs.y;// NOLINT
+    return dx * dx + dy * dy < GEOEPS * GEOEPS;
 }
 
-bool Point::operator!=(const Point& rhs) const {
-    return !(rhs == *this);
+bool operator!=(const Point& lhs, const Point& rhs) {
+    return !(lhs == rhs);
 }
 
 Line::Line(Point pt1, Point pt2)// NOLINT
@@ -144,11 +139,10 @@ Point Line::getRandPoint(double r1) const noexcept {// NOLINT
     return { p1.x * r1 + p2.x * r2, p1.y * r1 + p2.y * r2 };
 }
 
-std::ostream& Geometry::operator<<(std::ostream& os, const Line& line) {// NOLINT
+std::ostream& operator<<(std::ostream& os, const Line& line) {// NOLINT
     os << "Line Segment: [" << line.p1 << ", " << line.p2 << ']';
     return os;
 }
-
 
 Triangle::Triangle(Point pt1, Point pt2, Point pt3)
     : p1{ pt1 }
@@ -167,7 +161,7 @@ Triangle::Triangle(Point pt1, Point pt2, Point pt3)
 // If this triangle intersects the other triangle. Intersections at end points
 // or along parallel lines are not counted. This is used to build the model and ensure
 // cell placement is valid.
-bool Geometry::Triangle::intersects(const Triangle& other) const noexcept {// NOLINT
+bool Triangle::intersects(const Triangle& other) const noexcept {// NOLINT
     const auto intersect = [](const Line& line1, const Line& line2) {
         auto intersects = false;
         const auto poi = line1.getIntersection(line2);// This function returns std::nullopt for overlapping || lines
@@ -217,7 +211,7 @@ bool Triangle::contains(const Point& p) const noexcept {// NOLINT
     return false;
 }
 
-bool Geometry::Triangle::isClockwise() const noexcept {
+bool Triangle::isClockwise() const noexcept {
     const auto [p1_x, p1_y] = std::pair{ p2.x - p1.x, p2.y + p1.y };
     const auto [p2_x, p2_y] = std::pair{ p3.x - p2.x, p3.y + p2.y };
     const auto [p3_x, p3_y] = std::pair{ p1.x - p3.x, p1.y + p3.y };
@@ -266,7 +260,7 @@ bool Triangle::contains(const Triangle& other) const noexcept {// NOLINT
     return contains(other.p1) || contains(other.p2) || contains(other.p3);
 }
 
-std::ostream& Geometry::operator<<(std::ostream& os, const Triangle& triangle) {// NOLINT
+std::ostream& operator<<(std::ostream& os, const Triangle& triangle) {// NOLINT
     os << "Triangle: [" << triangle.p1 << ", " << triangle.p2 << ", " << triangle.p3 << "]";
     return os;
 }
@@ -326,7 +320,7 @@ double getLineLength(const Line& line) noexcept {
 
 // Returns 0 for a vertical line!
 double getSlope(const Point& p1, const Point& p2) noexcept {// NOLINT
-    return (p1.x == p2.x) ? 0. : (p1.y - p2.y) / (p1.x - p2.x);
+    return (approxEqual(p1.x,p2.x)) ? 0. : (p1.y - p2.y) / (p1.x - p2.x);
 }
 
 double getIntercept(double x, double y, double slope) noexcept {// NOLINT
@@ -340,9 +334,11 @@ LineError::LineError(Geometry::Line line)
     setMessage("Cannot create a line using 2 identical points -> " + os.str());
 }
 
-TriangleError::TriangleError(Geometry::Triangle triangle)
+TriangleError::TriangleError(const Geometry::Triangle& triangle)
     : triangle_{ triangle } {
     std::ostringstream os;// NOLINT
     os << triangle_;
     setMessage("These 3 points do not allow for a valid triangle -> " + os.str());
 }
+
+}// namespace Geometry

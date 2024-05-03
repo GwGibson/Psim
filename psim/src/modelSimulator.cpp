@@ -1,33 +1,19 @@
-#include "psim/modelSimulator.h"// for ModelSimulator::BuilderObj, Model...
-#include "psim/cell.h"// for Cell
-#include "psim/compositeSurface.h"// for CompositeSurface
-#include "psim/geometry.h"// for Point, Line
-#include "psim/material.h"// for Material, Material::Polar
-#include "psim/phonon.h"// for Phonon, Phonon::RelaxRates
-#include "psim/phononBuilder.h"// for CellOriginBuilder, PhasorBuilder
-#include "psim/surface.h"// for EmitSurface
-#include "psim/utils.h"// for urand
-#include <algorithm>// for generate, min, shuffle
-#include <array>// for array
-#include <cmath>// for fabs, modf, log
-#include <cstddef>// for size_t
-#include <execution>// for for_each, par
-#include <iterator>// for begin, end, cbegin, cend
-#include <memory>// for unique_ptr, make_unique, swap
-#include <new>// for bad_alloc
-#include <numeric>// for accumulate
-#include <random>// for random_device
-#include <tuple>// for tie, tuple
-#include <type_traits>// for __strip_reference_wrapper<>::__type
-#include <utility>// for move, make_pair
-#include <variant>// for visit
-#include <vector>// for vector
+#include "psim/modelSimulator.h"
+#include "psim/cell.h"
+#include "psim/geometry.h"
+#include "psim/material.h"
+#include "psim/phononBuilder.h"
+#include "psim/utils.h"
+#include <algorithm>
+#include <execution>
+#include <numeric>
 
 using Point = Geometry::Point;
 using Line = Geometry::Line;
 using Polar = Material::Polar;
 
 namespace {
+
 constexpr double SCALING_FACTOR{ 1e9 };// Factor to scale the scattering time (ns per second)
 constexpr std::size_t PHONON_CUTOFF{ 5'000'000 };// Switch from individual phonons to builders at this point
 constexpr std::size_t BUILDER_MAX_PHONONS{ 100'000 };
@@ -37,6 +23,7 @@ constexpr std::size_t BUILDER_MAX_PHONONS{ 100'000 };
 constexpr double VELOCITY_EPS{ 0.01 };
 // Prevent phonons from endlessly bouncing in tight corners. Consider scaling this based on step_time_?
 constexpr std::size_t MAX_COLLISIONS{ 100 };
+
 }// namespace
 
 ModelSimulator::ModelSimulator(std::size_t measurement_steps, double simulation_time, bool phasor_sim)

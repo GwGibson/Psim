@@ -1,16 +1,13 @@
 #ifndef PSIM_MATERIAL_H
 #define PSIM_MATERIAL_H
 
-#include "phonon.h"// for Phonon, Phonon::RelaxRates, Phonon::Polariz...
-#include <array>// for array
-#include <cstddef>// for size_t
-#include <utility>// for pair, move
-#include <vector>// for vector
+#include "phonon.h"
+#include <array>
+#include <vector>
 
 struct DispersionData;
 struct RelaxationData;
 struct TableData;
-
 
 class Material {
 public:
@@ -100,8 +97,8 @@ private:
     [[nodiscard]] std::pair<const Table*, double> emitData(double temp) const;
     [[nodiscard]] std::pair<const Table*, double> scatterData(double temp) const;
 
-    [[nodiscard]] std::pair<Table, double> cumulDistEmit(Array&& la_dist, Array&& ta_dist) const;
-    [[nodiscard]] std::pair<Table, double> cumulDistScatter(Array&& la_dist, Array&& ta_dist, double temp) const;
+    [[nodiscard]] std::pair<Table, double> cumulDistEmit(Array la_dist, Array ta_dist) const;
+    [[nodiscard]] std::pair<Table, double> cumulDistScatter(Array la_dist, Array ta_dist, double temp) const;
     [[nodiscard]] static Table buildCumulDist(const Array& t1, const Array& t2);// NOLINT
     [[nodiscard]] Array phononDist(double temp, Polar polarization) const;
 
@@ -109,7 +106,6 @@ private:
     [[nodiscard]] double tauUInv(double temp, double freq, Polar polarization) const noexcept;
     [[nodiscard]] double tauIInv(double freq) const noexcept;// Impurity scattering
 
-    static void verifyInput(double low_temp, double high_temp, float interval_size);
     [[nodiscard]] std::size_t getTempIndex(double temp) const noexcept;
 };
 

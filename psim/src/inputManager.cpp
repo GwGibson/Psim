@@ -1,17 +1,11 @@
+
 #include "psim/inputManager.h"
 #include "psim/geometry.h"
-#include "psim/material.h"
 #include "psim/model.h"
 #include "psim/sensor.h"
-#include <array>
-#include <cstddef>
-#include <exception>
 #include <fstream>
 #include <iostream>
 #include <nlohmann/json.hpp>
-#include <stdexcept>
-#include <string>
-#include <utility>
 
 using json = nlohmann::json;
 using Point = Geometry::Point;

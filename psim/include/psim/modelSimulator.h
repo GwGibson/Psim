@@ -2,17 +2,12 @@
 #define PSIM_MODELSIMULATOR_H
 
 #include "phononBuilder.h"
-#include <array>// for array
-#include <cstddef>// for size_t
-#include <optional>// for optional
-#include <variant>// for variant
-#include <vector>// for vector
+#include <optional>
+#include <variant>
+#include <vector>
 
 class Cell;
-class CellOriginBuilder;
-class PhasorBuilder;
 class Phonon;
-class SurfaceOriginBuilder;
 
 class ModelSimulator {
 public:

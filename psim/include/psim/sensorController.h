@@ -1,9 +1,7 @@
 #ifndef PSIM_SENSORCONTROLLER_H
 #define PSIM_SENSORCONTROLLER_H
 
-#include "material.h"// for Material, Material::Table
-#include <cstddef>// for size_t
-#include <vector>// for vector
+#include "material.h"
 
 class Phonon;
 

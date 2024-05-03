@@ -12,7 +12,6 @@ sd_data = DispersionData((-2.22e-7, 9.26e3, 0.), 7.63916048e13,
                         (-2.28e-7, 5.24e3, 0.), 3.0100793072e13)
 sr_data = RelaxationData(1.3e-24, 9.0e-13, 1.9e-18, 0, 2.42e13)
 
-
 # Holland
 sd_data_h = DispersionData((-2.01e-7, 9.01e3, 0.), 7.63916048e13,
                         (-2.26e-7, 5.23e3, 0.), 3.0100793072e13)
@@ -28,7 +27,7 @@ gd_data = DispersionData((-1.50e-7, 5.63e3, 0.), 4.45236386e13,
                         (-1.13e-7, 2.60e3, 0.), 1.4937724175e13)
 gr_data = RelaxationData(2.3e-24, 30.0e-13, 1.5e-18, 0., 1.23e13)
 
-silicon = Material("Silicon", sd_data, sr_data)
+silicon = Material("Silicon", sd_data_h, sr_data_h)
 germanium = Material("Germanium", gd_data, gr_data)  # not used
 
 

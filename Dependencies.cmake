@@ -46,22 +46,26 @@ function(psim_setup_dependencies)
     endif()
   endif()
 
-  if(NOT TARGET tbb)
-    find_package(TBB QUIET)
+  if(NOT WIN32)
+    if(NOT TARGET tbb)
+      find_package(TBB QUIET)
 
-    if(TBB_FOUND)
-      message(STATUS "Found TBB: Using system TBB")
-    else()
-      message(STATUS "TBB not found: Using CPM to fetch TBB")
-      CPMAddPackage(
-        NAME tbb
-        GIT_REPOSITORY https://github.com/oneapi-src/oneTBB.git
-        GIT_TAG v2021.11.0
-        OPTIONS
-          "TBB_TEST OFF"
-          "TBB_STRICT OFF"
-      )
+      if(TBB_FOUND)
+        message(STATUS "Found TBB: Using system TBB")
+      else()
+        message(STATUS "TBB not found: Using CPM to fetch TBB")
+        CPMAddPackage(
+          NAME tbb
+          GIT_REPOSITORY https://github.com/oneapi-src/oneTBB.git
+          GIT_TAG v2021.11.0
+          OPTIONS
+            "TBB_TEST OFF"
+            "TBB_STRICT OFF"
+        )
+      endif()
     endif()
+  else()
+    message(STATUS "Skipping TBB fetch on Windows.")
   endif()
 
 endfunction()

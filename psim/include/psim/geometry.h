@@ -1,40 +1,35 @@
 #ifndef PSIM_GEOMETRY_H
 #define PSIM_GEOMETRY_H
 
-#include <array>// for array
-#include <exception>// for exception
-#include <optional>// for optional
-#include <ostream>// for ostream
-#include <string>// for string
-#include <string_view>// for string_view
-#include <utility>// for pair
+#include <array>
+#include <exception>
+#include <limits>
+#include <optional>
+#include <ostream>
+#include <string>
+#include <utility>
 
 
 namespace Geometry {
+
+inline constexpr double GEOEPS = std::numeric_limits<double>::epsilon() * 1E9;
+struct Point;
+using PointPair = std::pair<Point, Point>;
+
 struct Vector2D {
-    constexpr Vector2D(double x_coord, double y_coord) noexcept
-        : x{ x_coord }
-        , y{ y_coord } {
-    }
     double x;
     double y;
 };
 
 struct Point {
-    constexpr Point(double x_coord, double y_coord) noexcept
-        : x{ x_coord }
-        , y{ y_coord } {
-    }
     double x;
     double y;
-
-    bool operator==(const Point& rhs) const;
-    bool operator!=(const Point& rhs) const;
 };
+
+bool operator==(const Point& lhs, const Point& rhs);
+bool operator!=(const Point& lhs, const Point& rhs);
 std::ostream& operator<<(std::ostream& os, const Point& point);// NOLINT
 Point operator-(const Point& lhs, const Point& rhs);
-
-using PointPair = std::pair<Point, Point>;
 
 struct Line {
     Line(Point pt1, Point pt2);
@@ -44,10 +39,10 @@ struct Line {
     // maybe only store the length and bounding box
     double slope;
     double intercept;
-    PointPair boundingBox;
+    std::pair<Point, Point> boundingBox;
     double length;
 
-    [[nodiscard]] PointPair getPoints() const noexcept {
+    [[nodiscard]] std::pair<Point, Point> getPoints() const noexcept {
         return { p1, p2 };
     }
 
@@ -71,6 +66,7 @@ struct Line {
         return length > rhs.length;
     }
 };
+
 std::ostream& operator<<(std::ostream& os, const Line& line);// NOLINT
 
 struct Triangle {
@@ -93,8 +89,18 @@ struct Triangle {
     bool operator==(const Triangle& rhs) const;
 };
 std::ostream& operator<<(std::ostream& os, const Triangle& triangle);// NOLINT
-}// namespace Geometry
 
+/**
+ * @brief Check if two floating-point values are approximately equal within a specified tolerance.
+ *
+ * @param a The first value to compare.
+ * @param b The second value to compare.
+ * @param epsilon The tolerance used for the comparison (default: EPSILON).
+ * @return true if the values are approximately equal within the given tolerance, false otherwise.
+ */
+[[nodiscard]] inline bool approxEqual(double a, double b, double epsilon = GEOEPS) noexcept {// NOLINT
+    return std::abs(a - b) < epsilon;
+}
 
 class ShapeError : public std::exception {
 public:
@@ -113,18 +119,20 @@ private:
 
 class LineError : public ShapeError {
 public:
-    explicit LineError(Geometry::Line line);
+    explicit LineError(Line line);
 
 private:
-    Geometry::Line line_;
+    Line line_;
 };
 
 class TriangleError : public ShapeError {
 public:
-    explicit TriangleError(Geometry::Triangle triangle);
+    explicit TriangleError(const Geometry::Triangle& triangle);
 
 private:
-    Geometry::Triangle triangle_;
+    Triangle triangle_;
 };
+
+}// namespace Geometry
 
 #endif// PSIM_GEOMETRY_H

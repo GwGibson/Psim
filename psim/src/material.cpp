@@ -29,7 +29,7 @@ Material::Material(std::size_t mat_id, const DispersionData& disp_data, const Re
     , freq_width_{ std::max(w_max_la_, w_max_ta_) / NUM_FREQ_BINS } {
     const auto& [LA_coeffs, TA_coeffs, _unused, _unused1] = disp_data;
     // Build frequency Table
-    std::generate(std::begin(frequencies_), std::end(frequencies_), [n = -1, this]() mutable {// NOLINT
+    std::ranges::generate(frequencies_, [n = -1, this]() mutable {// NOLINT
         return (n += 2) * freq_width_ / 2.;// NOLINT
     });
 
@@ -137,7 +137,7 @@ std::pair<const Table*, double> Material::scatterData(double temp) const {
     return { &table.table, table.cumul_sum };
 }
 
-std::pair<Table, double> Material::cumulDistEmit(Array&& la_dist, Array&& ta_dist) const {
+std::pair<Table, double> Material::cumulDistEmit(Array la_dist, Array ta_dist) const {
     auto transform = [](auto& dist, const auto& velocities) {
         std::transform(
             std::cbegin(dist), std::cend(dist), std::cbegin(velocities), std::begin(dist), std::multiplies<>());
@@ -149,7 +149,7 @@ std::pair<Table, double> Material::cumulDistEmit(Array&& la_dist, Array&& ta_dis
             + std::accumulate(std::cbegin(ta_dist), std::cend(ta_dist), 0.) };
 }
 
-std::pair<Table, double> Material::cumulDistScatter(Array&& la_dist, Array&& ta_dist, double temp) const {
+std::pair<Table, double> Material::cumulDistScatter(Array la_dist, Array ta_dist, double temp) const {
     auto transform = [&, this](auto& dist, const auto& polar) {
         std::transform(std::cbegin(dist),
             std::cend(dist),
@@ -205,34 +205,32 @@ Array Material::phononDist(double temp, Polar polarization) const {
 
 // Normal scattering
 double Material::tauNInv(double temp, double freq, Polar polarization) const noexcept {
-    const auto tau_inv = [&]() {
+    return std::invoke([&]() {
         switch (polarization) {
         case Polar::LA:
             return b_l_ * freq * freq * pow(temp, 3);
         case Polar::TA:
             if (freq < w_) { return b_tn_ * freq * pow(temp, 4); }
             return 0.;
-        default:
-            return 0.;
         }
-    }();
-    return tau_inv;
+        // Should never reach here, both enums covered
+        return 0.;
+    });
 }
 
 // Umklapp scattering
 double Material::tauUInv(double temp, double freq, Polar polarization) const noexcept {
-    const auto tau_inv = [&]() {
+    return std::invoke([&]() {
         switch (polarization) {
         case Polar::LA:
             return b_l_ * freq * freq * pow(temp, 3);
         case Polar::TA:
             if (freq >= w_) { return b_tu_ * freq * freq / sinh(HBAR * freq / (temp * BOLTZ)); }
             return 0.;
-        default:
-            return 0.;
         }
-    }();
-    return tau_inv;
+        // Should never reach here, both enums covered
+        return 0.;
+    });
 }
 
 // Impurity Scattering
@@ -242,7 +240,7 @@ double Material::tauIInv(double freq) const noexcept {
 
 std::size_t Material::getTempIndex(double temp) const noexcept {
     const auto index = static_cast<std::size_t>(
-        std::distance(std::cbegin(temps_), std::lower_bound(std::cbegin(temps_), std::cend(temps_), temp)));
+        std::distance(std::cbegin(temps_), std::ranges::lower_bound(temps_, temp)));
     const auto maxIndex = temps_.size() - 1;
     return (index > maxIndex) ? maxIndex : index;
 }

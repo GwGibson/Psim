@@ -1,10 +1,8 @@
 #ifndef PSIM_PHONONBUILDER_H
 #define PSIM_PHONONBUILDER_H
 
-#include "phonon.h"// for Phonon
-#include <cstddef>// for size_t
-#include <stack>// for stack
-#include <utility>// for pair
+#include "phonon.h"
+#include <stack>
 
 class Cell;
 class EmitSurface;

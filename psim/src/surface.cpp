@@ -1,12 +1,8 @@
-#include "psim/geometry.h"// for Vector2D, Point
-#include "psim/material.h"// for Material
-#include "psim/phonon.h"// for Phonon, Phonon::Polarization
-#include <algorithm>// for max
-#include <cmath>// for sqrt, cos, M_PI
-#include <psim/cell.h>// for Cell
-#include <psim/surface.h>// for TransitionSurface, EmitSurface, Surface
-#include <psim/utils.h>// for urand
-#include <utility>// for move
+#include "psim/surface.h"
+#include "psim/cell.h"
+#include "psim/geometry.h"
+#include "psim/phonon.h"
+#include "psim/utils.h"
 
 using Point = Geometry::Point;
 using Polar = Phonon::Polarization;
@@ -64,12 +60,12 @@ EmitSurface::EmitSurface(Line surface_line,
 
 void EmitSurface::handlePhonon(Phonon& p, double step_time) const noexcept {// NOLINT
     const auto phonon_time = static_cast<double>(p.getLifeStep()) * step_time;
-    (phonon_time < start_time_ || phonon_time + step_time > start_time_ + duration_) ? Surface::boundaryHandlePhonon(p)
+    (phonon_time < start_time_ || phonon_time + step_time > start_time_ + duration_) ? boundaryHandlePhonon(p)
                                                                                      : p.setCell(nullptr);
 }
 
 double EmitSurface::getPhononTime() const noexcept {
-    return start_time_ + duration_ * Utils::urand();
+    return start_time_ + duration_ * urand();
 }
 
 void TransitionSurface::handlePhonon(Phonon& p) const noexcept {// NOLINT

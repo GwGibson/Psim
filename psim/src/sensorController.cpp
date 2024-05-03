@@ -1,18 +1,15 @@
 #include "psim/sensorController.h"
-#include "psim/material.h"// for Material, Material::Table
-#include "psim/phonon.h"// for Phonon
-#include <algorithm>// for generate_n, max, transform, equal
-#include <cmath>// for fabs
-#include <iterator>// for begin, cbegin, cend
-#include <utility>// for pair
-
+#include <algorithm>
+#include <cmath>
 
 namespace {
+
 // Sensor temperature must be within this percentage to be considered stable -> 0.001 = 0.1%
 constexpr double RESET_THRESHOLD{ 0.001 };
 // Temperature at each measurement step must be within this percentage to be considered stable
 // compared to the temperature at that step on the previous simulation iteration
 constexpr double TRANSIENT_RESET_THRESHOLD{ 0.02 };
+
 }// namespace
 
 SensorController::SensorController(const Material& material, double t_init, std::size_t num_measurements)// NOLINT
@@ -94,17 +91,15 @@ bool TransientController::resetRequired([[maybe_unused]] double t_final, std::ve
         [](double t1, double t2) {// NOLINT
             return std::fabs(t2 - t1) / t1 <= TRANSIENT_RESET_THRESHOLD;
         });// NOLINT
-    steady_temps_ = final_temps;
+    steady_temps_ = std::move(final_temps);
     return temp_stable;
 }
 
 void TransientController::reset() noexcept {
-    std::transform(
-        std::cbegin(steady_temps_), std::cend(steady_temps_), std::begin(heat_capacities_), [this](double temp) {
+    std::ranges::transform(std::as_const(steady_temps_), std::begin(heat_capacities_), [this](double temp) {
             return material_.baseEnergy(temp);
         });
-    std::transform(
-        std::cbegin(steady_temps_), std::cend(steady_temps_), std::begin(scatter_tables_), [this](double temp) {
+    std::ranges::transform(std::as_const(steady_temps_), std::begin(scatter_tables_), [this](double temp) {
             return material_.scatterTable(temp);
         });
 }

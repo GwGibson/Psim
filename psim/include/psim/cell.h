@@ -1,19 +1,11 @@
 #ifndef PSIM_CELL_H
 #define PSIM_CELL_H
 
-#include "compositeSurface.h"// for CompositeSurface
-#include "geometry.h"// for Triangle, Line, Point
-#include "material.h"// for Material, Material::Table
-#include "sensor.h"// for Sensor
-#include <array>// for array
-#include <cstddef>// for size_t
-#include <exception>// for exception
-#include <iosfwd>// for ostream
-#include <string>// for string
-#include <string_view>// for string_view
+#include "compositeSurface.h"
+#include "geometry.h"
+#include "sensor.h"
 
 class Phonon;
-
 
 // TODO - Inherit from Geometry::Triangle? Composition seems best for Sensor but requires a lot of forwarding
 class Cell {
@@ -22,7 +14,7 @@ public:
     using Line = Geometry::Line;
     using Triangle = Geometry::Triangle;
 
-    Cell(Triangle cell, Sensor& sensor, double spec = 1.);
+    Cell(const Triangle& cell, Sensor& sensor, double spec = 1.);
 
     [[nodiscard]] const Material& getMaterial() const noexcept {
         return sensor_.getMaterial();
@@ -53,6 +45,7 @@ public:
     [[nodiscard]] Point getRandPoint(double r1, double r2) const noexcept {// NOLINT
         return cell_.getRandPoint(r1, r2);
     }
+
     // Throws if the incoming cell overlaps, contains or is contained within this cell - both cells cannot coexist
     // in the same model
     void validate(const Cell& other) const;
@@ -71,7 +64,7 @@ public:
         return sensor_.scatterUpdate(p);// NOLINT
     }
     void updateEmitTables() noexcept;
-    void updateHeatParams(const Phonon& p, std::size_t step) noexcept;// NOLINT
+    void updateHeatParams(const Phonon& p, std::size_t step) const noexcept;// NOLINT
     void findTransitionSurface(Cell& other);
     void handleSurfaceCollision(Phonon& p, const Point& poi, double step_time) const noexcept;// NOLINT
 
@@ -82,7 +75,7 @@ public:
 
 private:
     Triangle cell_;
-    Sensor& sensor_;
+    Sensor& sensor_;// hmmm...
 
     // Unused space on each line defaults to a boundary surface and portions of this boundary surface
     // are allocated to different surface types as necessary
@@ -112,7 +105,7 @@ private:
 
 class IntersectError : public CellError {
 public:
-    IntersectError(Geometry::Triangle existing, Geometry::Triangle incoming);
+    IntersectError(const Geometry::Triangle& existing, const Geometry::Triangle& incoming);
 
 private:
     Geometry::Triangle existing_;
@@ -121,7 +114,7 @@ private:
 
 class OverlapError : public CellError {
 public:
-    OverlapError(Geometry::Triangle bigger, Geometry::Triangle smaller);
+    OverlapError(const Geometry::Triangle& bigger, const Geometry::Triangle& smaller);
 
 private:
     Geometry::Triangle bigger_;

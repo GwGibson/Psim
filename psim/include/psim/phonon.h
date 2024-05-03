@@ -1,17 +1,15 @@
 #ifndef PSIM_PHONON_H
 #define PSIM_PHONON_H
 
-#include <array>// for array
-#include <cstddef>// for size_t
-#include <ostream>// for operator<<, basic_ostream, basic_ostream<>::__ost...
-#include <utility>// for pair
-
-class Cell;
+#include <array>
+#include <ostream>
 
 namespace Geometry {
 struct Line;
 struct Point;
-}// namespace Geometry
+}
+
+class Cell;
 
 class Phonon {
 public:

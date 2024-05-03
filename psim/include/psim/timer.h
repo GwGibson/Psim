@@ -14,15 +14,15 @@ public:
     }
 
     double get_time_diff() {
-        auto now = std::chrono::steady_clock::now();
+        const auto now = std::chrono::steady_clock::now();
         std::chrono::duration<double> diff = now - last;
         last = std::chrono::steady_clock::now();
         return diff.count();
     }
 
     void time(const std::string& msg = "Time Taken: ") {
-        auto now = std::chrono::steady_clock::now();
-        std::chrono::duration<double> diff = now - last;
+        const auto now = std::chrono::steady_clock::now();
+        const std::chrono::duration<double> diff = now - last;
         std::cout << msg << diff.count() << "[s]\n";
         last = std::chrono::steady_clock::now();
     }

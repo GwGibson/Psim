@@ -1,13 +1,7 @@
-#include "psim/phononBuilder.h"// for SurfaceOriginBuilder, CellOriginBuilder
-#include "psim/cell.h"// for Cell
-#include "psim/geometry.h"// for Point, Vector2D
-#include "psim/phonon.h"// for Phonon, Phonon::Polarization, Phonon...
-#include "psim/surface.h"// for EmitSurface
-#include "psim/utils.h"// for urand
-#include <cstddef>// for size_t
-#include <stack>// for stack
-#include <utility>// for pair
-
+#include "psim/phononBuilder.h"
+#include "psim/cell.h"
+#include "psim/phonon.h"
+#include "psim/utils.h"
 
 Phonon CellOriginBuilder::operator()(double t_eq) noexcept {
     auto& [cell, phonons] = cells_.top();

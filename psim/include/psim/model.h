@@ -1,23 +1,13 @@
 #ifndef PSIM_MODEL_H
 #define PSIM_MODEL_H
 
-#include "cell.h"// for Cell
-#include "material.h"// for Material
-#include "modelSimulator.h"// for ModelSimulator
-#include "outputManager.h"// for OutputManager
-#include "psim/geometry.h"// for Point, Triangle (ptr only)
-#include "psim/sensor.h"// for Sensor, Sensor::SimulationType
-#include "sensorInterpreter.h"// for SensorInterpreter
-#include <cstddef>// for size_t
-#include <filesystem>// for path
-#include <memory>// for unique_ptr
-#include <mutex>// for mutex
-#include <optional>// for optional
-#include <string>// for string, basic_string
-#include <unordered_map>// for unordered_map
-#include <utility>// for pair
-#include <vector>// for vector
-
+#include "cell.h"
+#include "geometry.h"
+#include "modelSimulator.h"
+#include "outputManager.h"
+#include "sensor.h"
+#include "sensorInterpreter.h"
+#include <unordered_map>
 
 /**
  * The Model class primarily controls the geometrical aspects of the simulation.
@@ -83,7 +73,7 @@ public:
      * @param sensor_ID - The sensor this cell is linked to -> will throw if the sensor does not exist
      * @param spec - The specularity of the cell's boundary surfaces [0-1]
      */
-    void addCell(Geometry::Triangle&& triangle, std::size_t sensor_ID, double spec = 1.);
+    void addCell(Geometry::Triangle triangle, std::size_t sensor_ID, double spec = 1.);
     /**
      * This not not used as the python interface takes care of this
      *

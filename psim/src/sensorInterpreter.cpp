@@ -1,20 +1,14 @@
 #include "psim/sensorInterpreter.h"
-#include "psim/material.h"// for Material
-#include "psim/sensor.h"// for SensorMeasurements, Sensor
-#include <algorithm>// for transform, max
-#include <array>// for array
-#include <cmath>// for sqrt
-#include <execution>// for seq, transform
-#include <functional>// for plus
-#include <iterator>// for back_insert_iterator, cbegin, cend
-#include <numeric>// for accumulate
-#include <tuple>// for tie, tuple
-#include <utility>// for pair
+#include <algorithm>
+#include <cmath>
+#include <execution>
 
 namespace {
+
 // For the numerical inversions
 constexpr double EPS{ .0001 };
 constexpr std::size_t MAX_ITERS{ 40 };
+
 }// namespace
 
 void SensorInterpreter::setParams(double t_eq, double eff_energy) noexcept {// NOLINT
@@ -32,7 +26,7 @@ SensorMeasurements SensorInterpreter::scaleHeatParams(const Sensor& sensor) cons
     sm.final_fluxes.resize(num_measurements);
     const auto f_factor = eff_energy_ / sensor.getArea();
 
-    std::transform(std::cbegin(fluxes), std::cend(fluxes), std::begin(sm.final_fluxes), [&f_factor](auto elem) {
+    std::ranges::transform(fluxes, std::begin(sm.final_fluxes), [&f_factor](auto elem) {
         const auto [vx, vy] = elem;
         return std::array{ vx * f_factor, vy * f_factor };
     });
@@ -48,7 +42,7 @@ SensorMeasurements SensorInterpreter::scaleHeatParams(const Sensor& sensor) cons
                                            std::plus{},
                                            [&avg](const auto& val) { return (avg - val) * (avg - val); })
                                        / size);
-        return std::pair<double, double>(avg, std_dev / std::sqrt(size));
+        return std::pair(avg, std_dev / std::sqrt(size));
     };
 
     std::vector<double> t_data;
@@ -58,18 +52,12 @@ SensorMeasurements SensorInterpreter::scaleHeatParams(const Sensor& sensor) cons
     std::vector<double> fy_data;
     fy_data.reserve(num_measurements);
 
-    std::transform(
-        std::cbegin(sm.final_temps), std::cend(sm.final_temps), std::back_inserter(t_data), [](const auto temp) {
-            return temp;
-        });
-    std::transform(
-        std::cbegin(sm.final_fluxes), std::cend(sm.final_fluxes), std::back_inserter(fx_data), [](const auto& flux) {
-            return flux[0];
-        });
-    std::transform(
-        std::cbegin(sm.final_fluxes), std::cend(sm.final_fluxes), std::back_inserter(fy_data), [](const auto& flux) {
-            return flux[1];
-        });
+    std::ranges::transform(
+        std::as_const(sm.final_temps), std::back_inserter(t_data), [](const auto temp) { return temp; });
+    std::ranges::transform(
+        std::as_const(sm.final_fluxes), std::back_inserter(fx_data), [](const auto& flux) { return flux[0]; });
+    std::ranges::transform(
+        std::as_const(sm.final_fluxes), std::back_inserter(fy_data), [](const auto& flux) { return flux[1]; });
 
     std::tie(sm.t_steady, sm.std_t_steady) = avgAndStdError(t_data);
     std::tie(sm.x_flux, sm.std_x_flux) = avgAndStdError(fx_data);
@@ -91,8 +79,8 @@ std::vector<double> SensorInterpreter::getFinalTemps(const Sensor& sensor) const
 
 std::vector<double> SensorInterpreter::findTemperature(const Sensor& sensor, std::size_t start_step) const noexcept {
     const auto& energies = sensor.getEnergies();
-    auto start = std::cbegin(energies) + static_cast<int>(start_step);
-    auto end = std::cend(energies);
+    const auto start = std::cbegin(energies) + static_cast<int>(start_step);
+    const auto end = std::cend(energies);
     std::vector<double> temps(static_cast<std::size_t>(std::distance(start, end)));
     const auto& material = sensor.getMaterial();
     const auto area = sensor.getArea();
@@ -102,7 +90,7 @@ std::vector<double> SensorInterpreter::findTemperature(const Sensor& sensor, std
         std::size_t iter = 0;
         while ((ub - lb >= EPS) && (++iter != MAX_ITERS)) {
             temp = (ub + lb) / 2.;// NOLINT
-            double de = (material.theoreticalEnergy(temp, pseudo) * area) - current_energy;// NOLINT
+            const double de = (material.theoreticalEnergy(temp, pseudo) * area) - current_energy;// NOLINT
             (de < 0.) ? lb = temp : ub = temp;
         }
         return temp;
@@ -116,9 +104,10 @@ std::vector<double> SensorInterpreter::findTemperature(const Sensor& sensor, std
             if (t_eq_ != 0.) {// Do approximation to find the temperature
                 // If it is a steady-state simulation, the index will be disregarded when finding the heat capacity
                 return energy / (area * sensor.getHeatCapacity(static_cast<std::size_t>(index++))) + t_eq_;
-            } else {// Do numerical inversion
-                return inversion(energy);
             }
+            // Do numerical inversion
+            return inversion(energy);
+            
         });
     return temps;
 }

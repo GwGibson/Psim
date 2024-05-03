@@ -1,16 +1,8 @@
 #include "psim/cell.h"
-#include "psim/compositeSurface.h"// for CompositeSurface, operator<<
-#include "psim/geometry.h"// for operator<<, Triangle, Line, Point
-#include "psim/material.h"// for Material
-#include "psim/sensor.h"// for Sensor
-#include "psim/surface.h"// for Surface, EmitSurface
-#include <algorithm>// for find_if
-#include <cmath>// for fabs
-#include <execution>// for seq
-#include <functional>// for plus
-#include <iterator>// for cend, cbegin
-#include <sstream>// for operator<<, basic_ostream, basic...
-#include <vector>// for vector
+#include "psim/geometry.h"
+#include <cmath>
+#include <execution>
+#include <sstream>
 
 class Phonon;
 
@@ -18,7 +10,7 @@ using Line = Geometry::Line;
 using Point = Geometry::Point;
 
 // Assumes triangle has no intersecting surfaces - this is handled by the triangle class
-Cell::Cell(Cell::Triangle cell, Sensor& sensor, double spec)
+Cell::Cell(const Triangle& cell, Sensor& sensor, double spec)
     : cell_{ cell }
     , sensor_{ sensor }
     , boundaries_{ buildCompositeSurfaces(spec) } {
@@ -80,7 +72,7 @@ void Cell::updateEmitTables() noexcept {
 
 // The incoming phonon contributes its energy & flux to the sensor that is linked to this cell. The step refers to the
 // time frame where this contribution occurs
-void Cell::updateHeatParams(const Phonon& p, std::size_t step) noexcept {// NOLINT
+void Cell::updateHeatParams(const Phonon& p, std::size_t step) const noexcept {// NOLINT
     sensor_.updateHeatParams(p, step);
 }
 
@@ -109,8 +101,7 @@ void Cell::findTransitionSurface(Cell& other) {
 // The step_time is only needed for transient simulations. It is used to check whether a surface
 // is currently acting as an emitting surface or whether it is currently acting as a boundary surface.
 void Cell::handleSurfaceCollision(Phonon& p, const Point& poi, double step_time) const noexcept {// NOLINT
-    const auto boundary_iter = std::find_if(std::cbegin(boundaries_),// NOLINT
-        std::cend(boundaries_),
+    const auto boundary_iter = std::ranges::find_if(boundaries_,
         [&poi](const auto& boundary) { return boundary.contains(poi); });
 
     if (boundary_iter != std::cend(boundaries_)) { boundary_iter->handlePhonon(p, poi, step_time); }
@@ -156,7 +147,7 @@ bool Cell::operator!=(const Cell& rhs) const {
     return !(rhs == *this);
 }
 
-IntersectError::IntersectError(Geometry::Triangle existing, Geometry::Triangle incoming)// NOLINT
+IntersectError::IntersectError(const Geometry::Triangle& existing, const Geometry::Triangle& incoming)// NOLINT
     : existing_{ existing }
     , incoming_{ incoming } {
     std::ostringstream os;// NOLINT
@@ -164,7 +155,7 @@ IntersectError::IntersectError(Geometry::Triangle existing, Geometry::Triangle i
     setMessage(os.str());
 }
 
-OverlapError::OverlapError(Geometry::Triangle bigger, Geometry::Triangle smaller)// NOLINT
+OverlapError::OverlapError(const Geometry::Triangle& bigger, const Geometry::Triangle& smaller)// NOLINT
     : bigger_{ bigger }
     , smaller_{ smaller } {
     std::ostringstream os;// NOLINT

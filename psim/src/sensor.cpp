@@ -1,13 +1,4 @@
 #include "psim/sensor.h"
-#include "psim/material.h"// for Material, Material::Table
-#include "psim/phonon.h"// for Phonon
-#include "psim/sensorController.h"// for PeriodicController, SteadyStateCo...
-#include <algorithm>// for fill
-#include <iterator>// for begin, end
-#include <stdexcept>// for runtime_error
-#include <string>// for string
-#include <utility>// for move
-
 
 Sensor::Sensor(std::size_t ID,// NOLINT
     const Material& material,
@@ -45,7 +36,7 @@ void Sensor::scatterUpdate(Phonon& p) const noexcept {// NOLINT
     controller_->scatterUpdate(p);
 }
 
-bool Sensor::resetRequired(double t_final, std::vector<double>&& final_temps) noexcept {
+bool Sensor::resetRequired(double t_final, std::vector<double>&& final_temps) const noexcept {
     return controller_->resetRequired(t_final, std::move(final_temps));
 }
 

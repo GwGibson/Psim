@@ -1,13 +1,10 @@
 #ifndef PSIM_SENSOR_H
 #define PSIM_SENSOR_H
 
-#include "material.h"// for Material, Material::Table
-#include "sensorController.h"// for SensorController
-#include <array>// for array
-#include <cstddef>// for size_t
-#include <memory>// for unique_ptr
-#include <mutex>// for mutex
-#include <vector>// for vector
+#include "material.h"
+#include "sensorController.h"
+#include <memory>
+#include <mutex>
 
 class Phonon;
 
@@ -27,7 +24,7 @@ public:
         area_covered_ += area;
     }
     // final temps vector is only needed for transient simulations -> included for all calls to keep a common interface
-    [[nodiscard]] bool resetRequired(double t_final, std::vector<double>&& final_temps = {}) noexcept;
+    [[nodiscard]] bool resetRequired(double t_final, std::vector<double>&& final_temps = {}) const noexcept;
 
     [[nodiscard]] std::size_t getID() const noexcept {
         return ID_;
@@ -64,7 +61,7 @@ public:
      */
     void updateHeatParams(const Phonon& p, std::size_t step) noexcept;// NOLINT
     void reset() noexcept;
-    void updateTables() {
+    void updateTables() const {
         controller_->updateTables();
     }
 

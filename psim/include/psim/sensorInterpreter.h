@@ -1,10 +1,7 @@
 #ifndef PSIM_SENSORINTERPRETER_H
 #define PSIM_SENSORINTERPRETER_H
 
-#include "sensor.h"// for SensorMeasurements
-#include <cstddef>// for size_t
-#include <vector>// for vector
-
+#include "sensor.h"
 
 class SensorInterpreter {
 public:

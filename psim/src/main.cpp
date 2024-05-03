@@ -1,13 +1,10 @@
 #include "psim/inputManager.h"
 #include "psim/model.h"
 #include "psim/timer.h"
-#include <exception>
 #include <filesystem>
 #include <iostream>
-#include <optional>
 #include <string>
 #include <vector>
-
 
 // NOLINTNEXTLINE(bugprone-exception-escape)
 int main(int argc, char* argv[]) {

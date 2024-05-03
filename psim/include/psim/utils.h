@@ -11,8 +11,8 @@ inline constexpr double PI = 3.1415926535897932384626433832795028841971693993751
 // Generates a random number from a uniform distribution over [0,1].
 inline double urand() noexcept {
     static std::random_device rd;// NOLINT
-    static thread_local std::mt19937 generator(rd());
-    std::uniform_real_distribution<double> dist(0., std::nextafter(1.0, 2.0));// NOLINT
+    thread_local std::mt19937 generator(rd());
+    std::uniform_real_distribution dist(0., std::nextafter(1.0, 2.0));// NOLINT
     return dist(generator);
 }
 
