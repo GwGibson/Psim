@@ -101,8 +101,8 @@ void Cell::findTransitionSurface(Cell& other) {
 // The step_time is only needed for transient simulations. It is used to check whether a surface
 // is currently acting as an emitting surface or whether it is currently acting as a boundary surface.
 void Cell::handleSurfaceCollision(Phonon& p, const Point& poi, double step_time) const noexcept {// NOLINT
-    const auto boundary_iter = std::ranges::find_if(boundaries_,
-        [&poi](const auto& boundary) { return boundary.contains(poi); });
+    const auto boundary_iter =
+        std::ranges::find_if(boundaries_, [&poi](const auto& boundary) { return boundary.contains(poi); });
 
     if (boundary_iter != std::cend(boundaries_)) { boundary_iter->handlePhonon(p, poi, step_time); }
 }

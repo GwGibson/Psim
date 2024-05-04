@@ -7,7 +7,7 @@
 namespace Geometry {
 struct Line;
 struct Point;
-}
+}// namespace Geometry
 
 class Cell;
 

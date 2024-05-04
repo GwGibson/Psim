@@ -107,7 +107,6 @@ std::vector<double> SensorInterpreter::findTemperature(const Sensor& sensor, std
             }
             // Do numerical inversion
             return inversion(energy);
-            
         });
     return temps;
 }

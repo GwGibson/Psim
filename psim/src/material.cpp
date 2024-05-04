@@ -239,8 +239,8 @@ double Material::tauIInv(double freq) const noexcept {
 }
 
 std::size_t Material::getTempIndex(double temp) const noexcept {
-    const auto index = static_cast<std::size_t>(
-        std::distance(std::cbegin(temps_), std::ranges::lower_bound(temps_, temp)));
+    const auto index =
+        static_cast<std::size_t>(std::distance(std::cbegin(temps_), std::ranges::lower_bound(temps_, temp)));
     const auto maxIndex = temps_.size() - 1;
     return (index > maxIndex) ? maxIndex : index;
 }
