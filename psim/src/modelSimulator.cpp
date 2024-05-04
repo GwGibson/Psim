@@ -31,7 +31,7 @@ ModelSimulator::ModelSimulator(std::size_t measurement_steps, double simulation_
     , phasor_sim_{ phasor_sim } {
     // Set up timing vector - each entry is the time at which a measurement will take place
     step_times_.resize(measurement_steps);
-    std::generate(std::begin(step_times_), std::end(step_times_), [&, n = 1]() mutable {// NOLINT
+    std::ranges::generate(step_times_, [&, n = 1]() mutable {// NOLINT
         return n++ * simulation_time / static_cast<double>(measurement_steps);
     });
 }
@@ -163,9 +163,9 @@ void ModelSimulator::simulatePhonon(Phonon&& p, std::size_t measurement_steps) c
         // drifted_time is how long the phonon drifts before an impact event
         // Will be equal to drift_time if there is no impact
         // Will be false/null if the phonon impacts an emitting surface - signals it should be removed from system
-        const std::optional<double> drifted_time = handleImpacts(p, drift_time, sensor_id);
 
-        if (drifted_time) {// If the phonon had a transition/boundary surface collision
+        // If the phonon had a transition/boundary surface collision
+        if (const std::optional<double> drifted_time = handleImpacts(p, drift_time, sensor_id)) {
             // If the phonon has transitioned to a new sensor area (impact with transition surface)
             // Adjust drift_time to reflect there may be additional impacts but, first we need to find
             // a new scattering time before continuing
@@ -236,7 +236,7 @@ void ModelSimulator::runPhononByPhonon(double t_eq) {
     }
     // Shuffling the phonons may help with the performance bottleneck when recording a phonon's contribution
     // to a sensor's energy/flux at each measurement step (Sensor::updateHeatParams)
-    std::shuffle(std::begin(phonons), std::end(phonons), std::random_device());
+    std::ranges::shuffle(phonons, std::random_device());
     std::for_each(std::execution::par, std::begin(phonons), std::end(phonons), [&](const auto& phonon) {
         simulatePhonon(std::move(*phonon), step_times_.size());
     });

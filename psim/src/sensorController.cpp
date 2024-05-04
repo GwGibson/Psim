@@ -61,16 +61,18 @@ bool SensorController::resetRequired(double t_final, [[maybe_unused]] std::vecto
     return temp_stable;
 }
 
-void SteadyStateController::reset() noexcept {
+void SteadyStateController::reset(bool full_reset) noexcept {
     // Update tables and heat capacity using the steady state temperature at the end of the current run
+    if (full_reset) { t_steady_ = t_init_; }
     base_table_ = material_.baseTable(t_steady_);
     heat_capacity_ = material_.baseEnergy(t_steady_);
     scatter_table_ = material_.scatterTable(t_steady_);
 }
 
-void PeriodicController::reset() noexcept {
+void PeriodicController::reset(bool full_reset) noexcept {
     // Do not update the heat capacity -> this will have no effect for full simulations but will
     // further limit the temperature ranges of approximation simulations.
+    if (full_reset) { t_steady_ = t_init_; }
     base_table_ = material_.baseTable(t_steady_);
     scatter_table_ = material_.scatterTable(t_steady_);
 }
@@ -96,11 +98,17 @@ bool TransientController::resetRequired([[maybe_unused]] double t_final, std::ve
     return temp_stable;
 }
 
-void TransientController::reset() noexcept {
-    std::ranges::transform(std::as_const(steady_temps_), std::begin(heat_capacities_), [this](double temp) {
+void TransientController::reset(bool full_reset) noexcept {
+    if (full_reset) {
+        std::generate_n(std::begin(scatter_tables_), num_measurements_, [this]() { return scatter_table_; });
+        std::generate_n(std::begin(heat_capacities_), num_measurements_, [this]() { return heat_capacity_; });
+        std::generate_n(std::begin(steady_temps_), num_measurements_, [this]() { return t_init_; });
+    } else {
+        std::ranges::transform(std::as_const(steady_temps_), std::begin(heat_capacities_), [this](double temp) {
             return material_.baseEnergy(temp);
         });
-    std::ranges::transform(std::as_const(steady_temps_), std::begin(scatter_tables_), [this](double temp) {
+        std::ranges::transform(std::as_const(steady_temps_), std::begin(scatter_tables_), [this](double temp) {
             return material_.scatterTable(temp);
         });
+    }
 }

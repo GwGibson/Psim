@@ -10,20 +10,23 @@
 using json = nlohmann::json;
 using Point = Geometry::Point;
 using Triangle = Geometry::Triangle;
-using SimulationType = Sensor::SimulationType;
 
 std::optional<Model> InputManager::deserialize(const std::filesystem::path& filepath) {// NOLINT
 
     // ************************ Helper methods **********************************
     auto buildModel = [](std::size_t num_cells, std::size_t num_sensors, const auto& s_data) {
         const bool phasor_sim = s_data.at("phasor_sim").dump() == "true";
-        return Model(num_cells,
+        ModelParams params{ 1,
+            num_cells,
             num_sensors,
             s_data.at("num_measurements"),
             s_data.at("num_phonons"),
             s_data.at("sim_time"),
             s_data.at("t_eq"),
-            phasor_sim);
+            phasor_sim };
+        if (s_data.contains("num_runs")) { params.num_runs = s_data.at("num_runs"); }
+
+        return Model(params);
     };
 
     auto addMaterial = [](auto& model, double t_eq, const auto& m_data, std::size_t id) {// NOLINT

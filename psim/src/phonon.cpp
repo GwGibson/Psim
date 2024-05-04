@@ -27,7 +27,7 @@ void Phonon::drift(double time) noexcept {
 
 void Phonon::setRandDirection() noexcept {
     dx_ = 2. * Utils::urand() - 1.;// NOLINT
-    dy_ = sqrt(1. - dx_ * dx_) * cos(2. * Utils::PI * Utils::urand());// NOLINT
+    dy_ = sqrt(1. - dx_ * dx_) * cos(2. * PI * Utils::urand());// NOLINT
 }
 
 // TODO: Add better/reusable exceptions for the methods below

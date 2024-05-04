@@ -25,7 +25,7 @@ void Surface::redirectPhonon(Phonon& p) const noexcept {// NOLINT
     const auto& [nx, ny] = normal_;
     const auto rand = urand();
     const auto new_dx = sqrt(rand);
-    const auto new_dy = sqrt(1. - rand) * cos(2. * Utils::PI * urand());
+    const auto new_dy = sqrt(1. - rand) * cos(2. * PI * urand());
     p.setDirection(nx * new_dx - ny * new_dy, ny * new_dx + nx * new_dy);
 }
 

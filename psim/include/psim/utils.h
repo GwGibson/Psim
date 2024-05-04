@@ -1,18 +1,22 @@
 #ifndef PSIM_UTILS_H
 #define PSIM_UTILS_H
 
+#include "geometry.h"
+
 #include <array>
 #include <random>
 
-namespace Utils {
-
+enum class SimulationType { SteadyState, Periodic, Transient };
+inline constexpr double GEOEPS = std::numeric_limits<double>::epsilon() * 1E9;
 inline constexpr double PI = 3.1415926535897932384626433832795028841971693993751058209749445923;
+
+namespace Utils {
 
 // Generates a random number from a uniform distribution over [0,1].
 inline double urand() noexcept {
     static std::random_device rd;// NOLINT
     thread_local std::mt19937 generator(rd());
-    std::uniform_real_distribution dist(0., std::nextafter(1.0, 2.0));// NOLINT
+    std::uniform_real_distribution dist(0., std::nextafter(1., 2.));// NOLINT
     return dist(generator);
 }
 
@@ -51,6 +55,19 @@ std::array<std::pair<T, U>, V> zip(const std::array<T, V>& r1, const std::array<
     while (it1 != std::cend(r1) && it2 != std::cend(r2)) { result[index++] = { *it1++, *it2++ }; }
     return result;
 }
+
+/**
+ * @brief Check if two floating-point values are approximately equal within a specified tolerance.
+ *
+ * @param a The first value to compare.
+ * @param b The second value to compare.
+ * @param epsilon The tolerance used for the comparison (default: EPSILON).
+ * @return true if the values are approximately equal within the given tolerance, false otherwise.
+ */
+[[nodiscard]] inline bool approxEqual(double a, double b, double epsilon = GEOEPS) noexcept {// NOLINT
+    return std::abs(a - b) < epsilon;
+}
+
 }// namespace Utils
 
 #endif// PSIM_UTILS_H

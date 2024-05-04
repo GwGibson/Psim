@@ -15,7 +15,7 @@ sr_data = RelaxationData(1.3e-24, 9.0e-13, 1.9e-18, 0, 2.42e13)
 # Holland
 sd_data_h = DispersionData((-2.01e-7, 9.01e3, 0.), 7.63916048e13,
                         (-2.26e-7, 5.23e3, 0.), 3.0100793072e13)
-sr_data_h = RelaxationData(2.0e-24, 9.3e-13, 5.5e-18, 0., 2.417e13)
+sr_data_h = RelaxationData(2.0e-24, 9.3e-13, 5.5e-18, 1.2e-45, 2.417e13)
 
 # Wong 2011
 sd_data_w = DispersionData((-2.234e-7, 9.28e3, 0.), 7.63916048e13,
@@ -31,13 +31,14 @@ silicon = Material("Silicon", sd_data_h, sr_data_h)
 germanium = Material("Germanium", gd_data, gr_data)  # not used
 
 
-def simple_linear(num_cells: int, t_high: float, t_low: float, t_init: float,
+def simple_linear(num_runs: int, num_cells: int, t_high: float, t_low: float, t_init: float,
                   t_eq: float, x_base: float, y_base: float, spec: int = 1,
                   sim_type: int = 0, step_interval: int = 0) -> ModelBuilder:
     b = ModelBuilder()
+    b.setNumRuns(num_runs)
     # Specify general model settings
     b.setSimType(sim_type, step_interval)
-    b.t_eq = t_eq
+    b.setTeq(t_eq)
     # The model will be comprised of a single material
     b.addMaterial(silicon)
 

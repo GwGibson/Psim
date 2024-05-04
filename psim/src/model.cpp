@@ -3,6 +3,7 @@
 #include <cmath>
 #include <execution>
 #include <iostream>
+#include <ranges>
 
 namespace {
 // Maximum number of simulations resets
@@ -21,30 +22,25 @@ constexpr double PHASOR_TEMP_BOUND_EPS{ TEMP_BOUND_EPS * 100. };
 constexpr double SS_STEPS_PERCENT{ 0.1 };
 // Temperature intervals to create distribution tables. A smaller interval may increase precision
 // but will take up more memory. Primarily a concern for transient simulations
-constexpr float TEMP_INTERVAL{ 1. };
+constexpr float TEMP_INTERVAL{ .1F };
 }// namespace
 
 using Point = Geometry::Point;
 using Line = Geometry::Line;
 
-Model::Model(std::size_t num_cells,// NOLINT
-    std::size_t num_sensors,
-    std::size_t measurement_steps,
-    std::size_t num_phonons,
-    double simulation_time,// NOLINT
-    double t_eq,
-    bool phasor_sim)
-    : num_cells_{ num_cells }
-    , measurement_steps_{ measurement_steps }
-    , simulation_time_{ simulation_time }
-    , num_phonons_{ num_phonons }
-    , t_eq_{ t_eq }
-    , phasor_sim_{ phasor_sim }
-    , simulator_{ measurement_steps, simulation_time, phasor_sim }
+Model::Model(const ModelParams& params)
+    : num_runs_{ params.num_runs }
+    , num_cells_{ params.num_cells }
+    , measurement_steps_{ params.measurement_steps }
+    , simulation_time_{ params.simulation_time }
+    , num_phonons_{ params.num_phonons }
+    , t_eq_{ params.t_eq }
+    , phasor_sim_{ params.phasor_sim }
+    , simulator_{ params.measurement_steps, params.simulation_time, params.phasor_sim }
     , interpreter_{}
     , addMeasurementMutex_{ std::make_unique<std::mutex>() } {
-    cells_.reserve(num_cells);
-    sensors_.reserve(num_sensors);
+    cells_.reserve(params.num_cells);
+    sensors_.reserve(params.num_sensors);
 }
 
 void Model::setSimulationType(SimulationType type, std::size_t step_interval) {
@@ -85,14 +81,14 @@ void Model::addMaterial(const std::string& material_name, const Material& materi
 void Model::addSensor(std::size_t ID,// NOLINT
     const std::string& material_name,
     double t_init,
-    Sensor::SimulationType type) {
-    auto sensor = std::ranges::find_if(sensors_, [&ID](auto& s) {// NOLINT
+    SimulationType type) {
+    const auto sensor = std::ranges::find_if(sensors_, [&ID](auto& s) {// NOLINT
         return s.getID() == ID;
     });
     if (sensor == std::end(sensors_)) {
-        const std::size_t steps_to_record = (type == Sensor::SimulationType::SteadyState) ? static_cast<std::size_t>(
+        const std::size_t steps_to_record = (type == SimulationType::SteadyState) ? static_cast<std::size_t>(
                                                 static_cast<double>(measurement_steps_) * SS_STEPS_PERCENT)
-                                                                                          : measurement_steps_;// NOLINT
+                                                                                  : measurement_steps_;// NOLINT
         sensors_.emplace_back(ID, materials_.at(material_name), type, steps_to_record, t_init);
     } else {
         throw std::runtime_error(std::string("Sensor with this ID already exists\n"));
@@ -118,7 +114,7 @@ void Model::addCell(Geometry::Triangle triangle, std::size_t sensor_ID, double s
 
 // Not used if the python interface is used
 void Model::addCell(Point&& p1, Point&& p2, std::size_t sensor_ID, double spec) {// NOLINT
-    if (Geometry::approxEqual(p1.x, p2.x) || Geometry::approxEqual(p1.y, p2.y)) {
+    if (Utils::approxEqual(p1.x, p2.x) || Utils::approxEqual(p1.y, p2.y)) {
         throw std::runtime_error(std::string("These points do not specify a rectangle\n"));
     }
     addCell(Geometry::Triangle{ p1, { p1.x, p2.y }, { p2.x, p1.y } }, sensor_ID, spec);
@@ -141,48 +137,56 @@ bool Model::setEmitSurface(const Point& p1, const Point& p2, double temp, double
     return false;
 }
 
+// TODO: Change cout to logging
 void Model::runSimulation() {
-    // TODO: could run checks here to verify there is at least 1 sensor/cell etc.
-    const auto [min, max] = setTemperatureBounds();
-    initializeMaterialTables(min, max);
+    for (std::size_t runId = 0; runId < num_runs_; ++runId) {
+        std::cout << "Run: " << runId + 1 << '\n';
+        // TODO: could run checks here to verify there is at least 1 sensor/cell etc.
+        const auto [min, max] = setTemperatureBounds();
+        initializeMaterialTables(min, max);
 
-    auto refresh = [this]() {
-        auto total_energy = getTotalInitialEnergy();
-        double energy_per_phonon = total_energy / static_cast<double>(num_phonons_);// NOLINT
-        interpreter_.setParams(t_eq_, energy_per_phonon);
-        return std::pair{ total_energy, energy_per_phonon };
-    };
+        auto refresh = [this]() {
+            auto total_energy = getTotalInitialEnergy();
+            double energy_per_phonon = total_energy / static_cast<double>(num_phonons_);// NOLINT
+            interpreter_.setParams(t_eq_, energy_per_phonon);
+            return std::pair{ total_energy, energy_per_phonon };
+        };
 
-    auto [total_energy, energy_per_phonon] = refresh();
+        auto [total_energy, energy_per_phonon] = refresh();
 
-    std::size_t iter = 0;
-    bool reset_required = true;
-    while (reset_required && ++iter <= MAX_ITERS) {
-        simulator_.initPhononBuilders(cells_, t_eq_, energy_per_phonon);
-        simulator_.runSimulation(t_eq_);
-        // Check if sensor temperatures are stable
-        if (const auto new_t_eq = resetRequired(); new_t_eq && iter < MAX_ITERS && !phasor_sim_) {
-            reset();
-            t_eq_ = *new_t_eq;
-            std::cout << "system not stable\n";
-            std::cout << "updated t_eq: " << t_eq_ << '\n';
-        } else {
-            reset_required = false;
+        std::size_t iter = 0;
+        bool reset_required = true;
+        while (reset_required && ++iter <= MAX_ITERS) {
+            simulator_.initPhononBuilders(cells_, t_eq_, energy_per_phonon);
+            simulator_.runSimulation(t_eq_);
+            // Check if sensor temperatures are stable
+            if (const auto new_t_eq = resetRequired(); new_t_eq && iter < MAX_ITERS && !phasor_sim_) {
+                reset();
+                t_eq_ = *new_t_eq;
+                std::cout << "system not stable\n";
+                std::cout << "updated t_eq: " << t_eq_ << '\n';
+            } else {
+                reset_required = false;
+            }
+            std::tie(total_energy, energy_per_phonon) = refresh();
         }
-        std::tie(total_energy, energy_per_phonon) = refresh();
+        if (iter >= MAX_ITERS) {
+            // Should log this or include in output title
+            std::cout << "System did not stabilize!!\n";
+        }
+        storeResults(runId);
+        if (runId + 1 < num_runs_) {
+            reset(true);// Full reset (return sensors to t_init)
+        }
     }
-    if (iter >= MAX_ITERS) { std::cout << "System did not stabilize!!\n"; }// Should log this or include in output title
-    storeResults();
 }
 
 void Model::exportResults(const fs::path& filepath, double time) const {
-    outputManager_.steadyStateExport(filepath, time);
-    // If transient or periodic simulation -> do periodic export (This is useless for ss simulation that require resets)
-    if (sim_type_ != SimulationType::SteadyState) { outputManager_.periodicExport(filepath, time); }
+    outputManager_.exportResults(filepath, time, num_runs_, sim_type_);
 }
 
 Sensor& Model::getSensor(std::size_t ID) {// NOLINT
-    auto sensor = std::find_if(std::begin(sensors_), std::end(sensors_), [&ID](auto& s) {// NOLINT
+    const auto sensor = std::ranges::find_if(sensors_, [&ID](auto& s) {// NOLINT
         return s.getID() == ID;
     });
     if (sensor == std::end(sensors_)) { throw std::runtime_error(std::string("Sensor does not exist\n")); }
@@ -215,7 +219,9 @@ std::pair<double, double> Model::setTemperatureBounds() noexcept {
 
 
 void Model::initializeMaterialTables(double low_temp, double high_temp) {
-    for (auto& element : materials_) { element.second.initializeTables(low_temp, high_temp, TEMP_INTERVAL); }
+    for (auto& material : materials_ | std::views::values) {
+        material.initializeTables(low_temp, high_temp, TEMP_INTERVAL);
+    }
     for (auto& sensor : sensors_) { sensor.updateTables(); }
     for (auto& cell : cells_) { cell.updateEmitTables(); }
 }
@@ -232,16 +238,16 @@ double Model::avgTemp() const {
         });
 }
 
-void Model::storeResults() noexcept {
+void Model::storeResults(std::size_t runId) noexcept {
     std::for_each(std::execution::par, std::cbegin(sensors_), std::cend(sensors_), [&](const auto& sensor) {
         auto measurement = interpreter_.scaleHeatParams(sensor);
         std::scoped_lock lg(*addMeasurementMutex_);// NOLINT
-        outputManager_.addMeasurement(std::move(measurement));
+        outputManager_.addMeasurement(runId, std::move(measurement));
     });
-    outputManager_.sortMeasurements();
+    outputManager_.sortMeasurements(runId);
 }
 
-std::optional<double> Model::resetRequired() noexcept {
+std::optional<double> Model::resetRequired() const noexcept {
     auto t_diff = [](const auto& t_final, const auto& t_init) {
         return std::fabs(t_final - t_init) / t_init * 1000 > TEQ_THRESHOLD;// NOLINT
     };
@@ -265,11 +271,13 @@ std::optional<double> Model::resetRequired() noexcept {
                : std::nullopt;
 }
 
-void Model::reset() noexcept {
+void Model::reset(bool full_reset) noexcept {
     simulator_.reset();
     if (sim_type_ == SimulationType::Transient) {
-        for_each(std::execution::par, std::begin(sensors_), std::end(sensors_), [](auto& sensor) { sensor.reset(); });
+        for_each(std::execution::par, std::begin(sensors_), std::end(sensors_), [&full_reset](auto& sensor) {
+            sensor.reset(full_reset);
+        });
     } else {
-        for (auto& sensor : sensors_) { sensor.reset(); }
+        for (auto& sensor : sensors_) { sensor.reset(full_reset); }
     }
 }

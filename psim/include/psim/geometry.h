@@ -12,7 +12,6 @@
 
 namespace Geometry {
 
-inline constexpr double GEOEPS = std::numeric_limits<double>::epsilon() * 1E9;
 struct Point;
 using PointPair = std::pair<Point, Point>;
 
@@ -89,18 +88,6 @@ struct Triangle {
     bool operator==(const Triangle& rhs) const;
 };
 std::ostream& operator<<(std::ostream& os, const Triangle& triangle);// NOLINT
-
-/**
- * @brief Check if two floating-point values are approximately equal within a specified tolerance.
- *
- * @param a The first value to compare.
- * @param b The second value to compare.
- * @param epsilon The tolerance used for the comparison (default: EPSILON).
- * @return true if the values are approximately equal within the given tolerance, false otherwise.
- */
-[[nodiscard]] inline bool approxEqual(double a, double b, double epsilon = GEOEPS) noexcept {// NOLINT
-    return std::abs(a - b) < epsilon;
-}
 
 class ShapeError : public std::exception {
 public:

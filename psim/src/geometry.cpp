@@ -1,4 +1,7 @@
 #include "psim/geometry.h"
+
+#include "psim/utils.h"
+
 #include <algorithm>// for minmax, any_of
 #include <array>// for array, array<>::value_type
 #include <cmath>// for fabs, sqrt
@@ -320,7 +323,7 @@ double getLineLength(const Line& line) noexcept {
 
 // Returns 0 for a vertical line!
 double getSlope(const Point& p1, const Point& p2) noexcept {// NOLINT
-    return (approxEqual(p1.x,p2.x)) ? 0. : (p1.y - p2.y) / (p1.x - p2.x);
+    return (Utils::approxEqual(p1.x,p2.x)) ? 0. : (p1.y - p2.y) / (p1.x - p2.x);
 }
 
 double getIntercept(double x, double y, double slope) noexcept {// NOLINT

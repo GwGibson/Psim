@@ -3,6 +3,7 @@
 
 #include "material.h"
 #include "sensorController.h"
+#include "utils.h"
 #include <memory>
 #include <mutex>
 
@@ -10,7 +11,6 @@ class Phonon;
 
 class Sensor {
 public:
-    enum class SimulationType { SteadyState, Periodic, Transient };
     Sensor(std::size_t ID,// NOLINT
         const Material& material,
         SimulationType type,
@@ -60,7 +60,7 @@ public:
      * @param step - The measurement step to update
      */
     void updateHeatParams(const Phonon& p, std::size_t step) noexcept;// NOLINT
-    void reset() noexcept;
+    void reset(bool full_reset) noexcept;
     void updateTables() const {
         controller_->updateTables();
     }

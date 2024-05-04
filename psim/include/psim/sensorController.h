@@ -34,7 +34,7 @@ public:
      * @return - true if the temp of this sensor is unstable (final temp not within some percentage of initial temp)
      */
     [[nodiscard]] virtual bool resetRequired(double t_final, std::vector<double>&&) noexcept;
-    virtual void reset() noexcept = 0;
+    virtual void reset(bool full_reset = false) noexcept = 0;
 
 protected:
     const Material& material_;
@@ -69,7 +69,7 @@ public:
         return t_steady_;
     }
 
-    void reset() noexcept override;
+    void reset(bool full_reset = false) noexcept override;
 };
 
 class PeriodicController : public SensorController {
@@ -87,7 +87,7 @@ public:
         return t_steady_;
     }
 
-    void reset() noexcept override;
+    void reset(bool full_reset = false) noexcept override;
 };
 
 // May want to average results of final 10% of runs or something like this
@@ -107,7 +107,7 @@ public:
     void scatterUpdate(Phonon& p) const noexcept override;// NOLINT
     [[nodiscard]] bool resetRequired([[maybe_unused]] double t_final,
         std::vector<double>&& final_temps) noexcept override;
-    void reset() noexcept override;
+    void reset(bool full_reset) noexcept override;
 };
 
 #endif// PSIM_SENSORCONTROLLER_H

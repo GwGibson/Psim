@@ -38,13 +38,13 @@ Material::Material(std::size_t mat_id, const DispersionData& disp_data, const Re
     for (const auto& freq : frequencies_) {
         const double la_gv = getGv(freq, LA_coeffs);
         velocities_la_[index] = la_gv;
-        densities_la_[index] = pow(getK(freq, LA_coeffs), 2) / 2. / pow(Utils::PI, 2) / la_gv;// NOLINT
+        densities_la_[index] = pow(getK(freq, LA_coeffs), 2) / 2. / pow(PI, 2) / la_gv;// NOLINT
         const double ta_gv = getGv(freq, TA_coeffs);
         if (!std::isnan(ta_gv)) {
             velocities_ta_[index] = ta_gv;
             // Do not divide by 2 since the TA branch is doubly degenerate
             // Can account for this in the density of states array to save computations elsewhere
-            densities_ta_[index] = pow(getK(freq, TA_coeffs), 2) / pow(Utils::PI, 2) / ta_gv;
+            densities_ta_[index] = pow(getK(freq, TA_coeffs), 2) / pow(PI, 2) / ta_gv;
         }
         ++index;
     }

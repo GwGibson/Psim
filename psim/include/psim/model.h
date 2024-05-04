@@ -9,6 +9,17 @@
 #include "sensorInterpreter.h"
 #include <unordered_map>
 
+struct ModelParams {
+    std::size_t num_runs{ 1 };
+    std::size_t num_cells;
+    std::size_t num_sensors;
+    std::size_t measurement_steps;
+    std::size_t num_phonons;
+    double simulation_time;
+    double t_eq;
+    bool phasor_sim{ false };
+};
+
 /**
  * The Model class primarily controls the geometrical aspects of the simulation.
  * Materials must be added first with the addMaterials function. Then the sensors must be added as each
@@ -19,7 +30,6 @@
 class Model {
 public:
     using Point = Geometry::Point;
-    using SimulationType = Sensor::SimulationType;
 
     /**
      * @param num_cells - The number of cells that the model will contain.
@@ -31,13 +41,7 @@ public:
      * @param t_eq - The linearization (equilibrium) temperature of the system - 0 indicates a full simulation
      * @param phasor_sim - True -> phonons have uniform direction & velocity & no scattering
      */
-    Model(std::size_t num_cells,
-        std::size_t num_sensors,
-        std::size_t measurement_steps,
-        std::size_t num_phonons,
-        double simulation_time,
-        double t_eq,
-        bool phasor_sim = false);
+    Model(const ModelParams& params);
     /**
      * @param type - The type of simulation. Default is steady state.
      * @param step_interval - For periodic and transient simulations only. The distance between steps for which
@@ -61,10 +65,8 @@ public:
      * @param t_init - The initial temperature of the cells linked to the sensor
      * @param type - The type of simulation - steady-state periodic or transient
      */
-    void addSensor(std::size_t ID,
-        const std::string& material_name,
-        double t_init,
-        Sensor::SimulationType type);// NOLINT
+    void addSensor(std::size_t ID, const std::string& material_name, double t_init,
+        SimulationType type);// NOLINT
     /**
      * Adds a triangular cell to the system.
      * Ensures new cells are not contained in existing cells and existing cells do not contain the new cell.
@@ -109,6 +111,7 @@ public:
 
 private:
     SimulationType sim_type_{ SimulationType::SteadyState };
+    std::size_t num_runs_;
     std::size_t num_cells_;
     std::size_t measurement_steps_;
     double simulation_time_;
@@ -117,6 +120,7 @@ private:
     bool phasor_sim_;
     std::size_t start_step_{ 0 };// 0 for SS simulations -> measurements vectors are scaled down in the sensors
 
+    // TODO: Not  a big fan of this, prefer dependency injection
     ModelSimulator simulator_;
     OutputManager outputManager_;
     SensorInterpreter interpreter_;
@@ -140,13 +144,13 @@ private:
     [[nodiscard]] std::pair<double, double> setTemperatureBounds() noexcept;
     void initializeMaterialTables(double low_temp, double high_temp);
     [[nodiscard]] double avgTemp() const;
-    void storeResults() noexcept;
+    void storeResults(std::size_t runId) noexcept;
     /**
      * @return - The new t_eq if the system needs to be reset and re-run - less than 90% of the model's sensor
      * temperatures are stable (90%) and std::nullopt otherwise
      */
-    [[nodiscard]] std::optional<double> resetRequired() noexcept;
-    void reset() noexcept;
+    [[nodiscard]] std::optional<double> resetRequired() const noexcept;
+    void reset(bool full_reset = false) noexcept;
 };
 
 

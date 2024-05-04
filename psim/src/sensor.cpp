@@ -51,10 +51,10 @@ void Sensor::updateHeatParams(const Phonon& p, std::size_t step) noexcept {// NO
     v[1] += vy * sign;
 }
 
-void Sensor::reset() noexcept {
-    controller_->reset();
+void Sensor::reset(bool full_reset) noexcept {
+    controller_->reset(full_reset);
     // Reset incoming flux values to 0.
-    for (auto& flux_array : inc_flux_) { std::fill(std::begin(flux_array), std::end(flux_array), 0.); }
+    for (auto& flux_array : inc_flux_) { std::ranges::fill(flux_array, 0.); }
     // Reset incoming energies to 0.
-    std::fill(std::begin(inc_energy_), std::end(inc_energy_), 0);
+    std::ranges::fill(inc_energy_, 0);
 }
